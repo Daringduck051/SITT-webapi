@@ -94,24 +94,27 @@
         </div>
         <div class="plusBtn"><button class="btn btn-outline-dark" id="OSHAPlusButton">+</button></div>
         <div class="minusBtn"><button class="btn btn-outline-dark" id="OSHAMinusButton" disabled>-</button></div>
-        </div>
-</div>
-    <div class="CustomThemes">
-        <button class="btn btn-outline-*" id="CustomTheme">Add Custom Theme</button>
     </div>
 
-    <div id="CustomThemeList1"></div>
+        <div class="CustomThemes">
+            <button class="btn btn-outline-*" id="CustomTheme">Add Custom Theme</button>
+        </div>
+    <div class="row">
+     <div class="boxes" id="CustomThemeList1"></div>
+        <div class="col-6">
 
-     <dialog id="CustomThemeInput">
-        <form method="dialog">
-            <p>Enter a Custom Theme Name</p>
-            <input type="text" id="CustomThemeName" placeholder="Enter a custom theme:" maxlength="30" required>
-            <div>
-            <button type="submit" id="SubmitCustomTheme" value="confirm">Save</button>
-            <button id="CancelCustomTheme" value="cancel" formnovalidate>Cancel</button>
-            </div>
-        </form>
-    </dialog>
+        <dialog id="CustomThemeInput">
+            <form method="dialog">
+                <p>Enter a Custom Theme Name</p>
+                <input type="text" id="CustomThemeName" placeholder="Enter a custom theme:" maxlength="30" required>
+                <div>
+                <button type="submit" id="SubmitCustomTheme" value="confirm">Save</button>
+                <button id="CancelCustomTheme" value="cancel" formnovalidate>Cancel</button>
+                </div>
+            </form>
+        </dialog>
+        </div>
+    </div>
 
     <div id="DeleteREQ"></div>
 

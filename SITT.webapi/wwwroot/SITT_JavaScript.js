@@ -162,8 +162,9 @@ dialog.addEventListener("close", () => {
 
     let count = 0; 
 
-
+    debugger;
     const themeText = document.createElement("p");
+    themeText.classList.add("boxes")
     themeText.innerHTML = `${newThemeName}: <span class="count-display">0</span>`;
     
 
