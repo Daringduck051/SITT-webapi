@@ -1,0 +1,255 @@
+h1 {
+    font-size: 24px;
+    text-align: center;
+}
+
+.boxCore {
+    width: 300px;
+    font-size: 40px;
+    /*margin-top: 20px;*/
+    margin-left: 20px; 
+    border-right: 20px;
+}
+
+.boxLMS {
+    width: 300px;
+    font-size: 40px;
+    /*margin-top: 10px;*/
+    margin-left: 20px; 
+}
+
+.boxCMS {
+    width: 300px;
+    font-size: 40px;
+    /*margin-top: 10px;*/
+    margin-left: 20px; 
+}
+
+.boxEHS {
+    width: 300px;
+    font-size: 40px;
+    /*margin-top: 10px;*/
+    margin-left: 20px; 
+}
+
+.boxOSHA {
+    width: 300px;
+    font-size: 40px;
+    /*margin-top: 10px;*/
+    margin-left: 20px; 
+}
+
+.counterSection {
+    position: relative;
+    /*padding-left: 0px;
+    margin: 0px 0;*/
+}
+
+.counterSection::after {
+    content: "";
+    position:absolute;
+    left: -20px;
+    right: -20px;;
+    top: 0px;
+    bottom: 0px;
+    /*width: 10000px;*/
+    background-color: #000;
+}
+
+.HSICorePlusButton {
+    position: absolute;
+    top: 90px;
+    right: 10px;
+}
+.HSICoreMinusButton {
+    position: absolute;
+    top: 120px;
+    right: 12px;
+}
+/*.HSICoreMinusButton:disabled {
+    background-color: grey;
+    cursor: not-allowed;
+    opacity: 0.6;
+}*/
+
+.CoreSection {
+    height: 10px;
+    position: relative;
+    /*padding-left: 0px;
+    margin: 0px 0;*/
+}
+
+.CoreSection::after {
+    content: "";
+    position:absolute;
+    left: -30px;
+    right: -20px;;
+    top: 0px;
+    bottom: 0px;
+    /*width: 10000px;*/
+    background-color: #000;
+}
+
+.LMSSection {
+    height: 10px;
+    position: relative;
+    /*padding-left: 0px;
+    margin: 0px 0;*/
+}
+
+.LMSSection::after {
+    content: "";
+    position:absolute;
+    left: -30px;
+    right: -20px;;
+    top: 0px;
+    bottom: 0px;
+    /*width: 10000px;*/
+    background-color: #000;
+}
+
+.LMSPlusButton {
+    position: absolute;
+    top: 150px;
+    right: 10px;
+}
+
+.LMSMinusButton {
+    position: absolute;
+    top: 180px;
+    right: 12px;
+}
+
+.CMSSection {
+    height: 10px;
+    position: relative;
+    /*padding-left: 0px;
+    margin: 0px 0;*/
+}
+
+.CMSPlusButton {
+    position: absolute;
+    top: 215px;
+    right: 10px;
+}
+
+.CMSMinusButton {
+    position: absolute;
+    top: 245px;
+    right: 12px;
+}
+
+.CMSSection::after {
+    content: "";
+    position:absolute;
+    left: -30px;
+    right: -20px;;
+    top: 0px;
+    bottom: 0px;
+    /*width: 10000px;*/
+    background-color: #000;
+}
+
+.EHSSection {
+    height: 10px;
+    position: relative;
+    /*padding-left: 0px;
+    margin: 0px 0;*/
+}
+
+.EHSSection::after {
+    content: "";
+    position:absolute;
+    left: -30px;
+    right: -20px;;
+    top: 0px;
+    bottom: 0px;
+    /*width: 10000px;*/
+    background-color: #000;
+}
+
+.EHSPlusButton {
+    position: absolute;
+    top: 280px;
+    right: 10px;
+}
+
+.EHSMinusButton {
+    position: absolute;
+    top: 310px;
+    right: 12px;
+}
+
+.OSHASection {
+    height: 10px;
+    position: relative;
+    /*padding-left: 0px;
+    margin: 0px 0;*/
+}
+
+.OSHASection::after {
+    content: "";
+    position:absolute;
+    left: -30px;
+    right: -20px;;
+    top: 0px;
+    bottom: 0px;
+    /*width: 10000px;*/
+    background-color: #000;
+}
+
+.OSHAPlusButton {
+    position: absolute;
+    top: 340px;
+    right: 10px;
+}
+
+.OSHAMinusButton {
+    position: absolute;
+    top: 370px;
+    right: 12px;
+}
+
+.CustomThemes {
+    position: absolute;
+    top: 30px;
+    right: 10px;
+}
+
+div#CustomThemeList1 p {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    width: 300px;
+    font-size: 40px;
+    margin-left: 20px;
+}
+
+div#HelpButton {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+}
+
+dialog#HelpButton2 {
+    width: 400px;
+}
+
+.Ellipse1, .Ellipse2, .Ellipse3 {
+    width: 7px;
+    height: 7px;
+    background-color: black;
+    border-radius: 50%;
+    margin: 3px 0;
+}
+
+.deleteVar {
+    margin-left: 10px;
+    margin-top: 5px;
+    font-size: 14px;
+}
+
+.ResetButton {
+    position: absolute;
+    top: 5px;
+    right: 60px;
+}

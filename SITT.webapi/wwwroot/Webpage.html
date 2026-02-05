@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Support Interaction Theme Tally</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+        <link href="SITT_Style.css" rel="stylesheet">
+    </head>
+    <body>
+    <h1>Support Interaction Theme Tally</h1>
+
+    <div class="counterSection">
+        ___
+    </div>
+
+    <div id="HelpButton">
+        <button title="Help" id="Help">Help</button>
+    </div>
+    <div id="HelpButton1">
+     <dialog id="HelpButton2">
+        <form method="Helpdialog">
+            <p3>This website is designed to help a support agent count the number of interactions per theme happen during their shift.</p3>
+            <p></p>
+            <p3>In order to do so, the agent will click on the "+" button to add an interaction to the respective theme, and the "-" button to remove an interaction from the respective theme.</p3>
+            <p></p>
+            <p3>To add a custom theme, the agent can click on the "Add Custom Theme" button and fill out the necessary information.</p3>
+            <p></p>
+            <p3>To remove the custom theme, the agent can click on the three dots next to the custom theme and select "Remove Theme".</p3>
+            <p></p>
+            <p3>Agents can reset all counts to zero by clicking on the "Reset" or "New Shift" button.</p3>
+            <p></p>
+            <p3>Agents can email the tally data by going into "Summary Mode" and clicking on "Email".</p3>
+            <p></p>
+            <input type="button" id="CloseHelp" value="Close">
+        </form>
+    </dialog>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-6">
+            <div class="boxCore">
+                <p2>HSI Core: <span id="HSICorePlusDisplay">0</span></p2>
+                <div class="CoreSection">
+                <p2></p2>
+                </div>
+            </div>
+            <div class="HSICorePlusButton"><button id="HSICorePlusButton">+</button></div>
+            <div class="HSICoreMinusButton"><button id="HSICoreMinusButton" disabled>-</button>
+            </div>
+            </div>
+            
+            <div class="col-6">
+            <div class="boxLMS">
+                <p2>LMS HSI: <span id="LMSDisplay">0</span></p2>
+                <div class="LMSSection">
+                <p2></p2>
+                </div>
+            </div>
+            <div class="LMSPlusButton"><button id="LMSPlusButton">+</button></div>
+            <div class="LMSMinusButton"><button id="LMSMinusButton" disabled>-</button></div>
+            </div>
+    </div>
+    <div class="row">
+        <div class="col-6">
+        <div class="boxCMS">
+            <p2>CMS: <span id="CMSDisplay">0</span></p2>
+            <div class="CMSSection">
+            <p2></p2>
+            </div>
+        </div>
+        <div class="CMSPlusButton"><button id="CMSPlusButton">+</button></div>
+        <div class="CMSMinusButton"><button id="CMSMinusButton" disabled>-</button></div>
+        </div>
+
+        <div class="col-6">
+        <div class="boxEHS">
+            <p2>EHS: <span id="EHSDisplay">0</span></p2>
+            <div class="EHSSection">
+            <p2></p2>
+            </div>
+        </div>
+        <div class="EHSPlusButton"><button id="EHSPlusButton">+</button></div>
+        <div class="EHSMinusButton"><button id="EHSMinusButton" disabled>-</button></div>
+        </div>
+
+        <div class="col-6">
+        <div class="boxOSHA">
+            <p2>OSHA Support: <span id="OSHADisplay">0</span></p2>
+            <div class="OSHASection">
+            <p2></p2>
+            </div>
+        </div>
+        </div>
+        <div class="OSHAPlusButton"><button id="OSHAPlusButton">+</button></div>
+        <div class="OSHAMinusButton"><button id="OSHAMinusButton" disabled>-</button></div>
+        </div>
+</div>
+    <div class="CustomThemes">
+        <button id="CustomTheme">Add Custom Theme</button>
+    </div>
+
+    <div id="CustomThemeList1"></div>
+
+     <dialog id="CustomThemeInput">
+        <form method="dialog">
+            <p>Enter a Custom Theme Name</p>
+            <input type="text" id="CustomThemeName" placeholder="Enter a custom theme:" maxlength="30" required>
+            <div>
+            <button type="submit" id="SubmitCustomTheme" value="confirm">Save</button>
+            <button id="CancelCustomTheme" value="cancel" formnovalidate>Cancel</button>
+            </div>
+        </form>
+    </dialog>
+
+    <div id="DeleteREQ"></div>
+
+     <dialog id="DeleteReq">
+        <form method="dialog">
+            <p>Type 'DELETE' to delete custom theme</p>
+            <input type="text" id="Deletion" placeholder="Enter a custom theme:" maxlength="6" required>
+            <div>
+            <button class="btn btn-danger" type="submit" id="DeleteRow" value="DELETE">DELETE</button>
+            <button class="btn btn-secondary" type="button" id="CancelDelete" value="delete" formnovalidate>Cancel</button>
+            </div>
+        </form>
+    </dialog>
+
+    <div class="ResetButton">
+        <button id="ResetButton">New Shift</button>
+    </div>
+    <div id="resetBtn">
+        <dialog id="resetDialog">
+            <form method="ResetDialog">
+                <p3>Are you sure you want to reset?</p3>
+                <p></p>
+                <input type="button" id="ConfirmReset" value="Yes">
+                <input type="button" id="CancelReset" value="No">
+            </form>
+        </dialog>
+    </div>
+
+    <div class="summaryView">
+        <button id="summaryView">Summary</button>
+    </div>
+    <div id="summaryBtn">
+        <dialog id="summaryDialog">
+            <form method="SummaryView">
+                <p3>SUMMARY</p3>
+                <p></p>
+                <input type="button" id="closeSummary" value="Close">
+            </form>
+        </dialog>
+    </div>
+
+    <script src="SITT_JavaScript.js" defer></script>
+    </body>
+</html>
