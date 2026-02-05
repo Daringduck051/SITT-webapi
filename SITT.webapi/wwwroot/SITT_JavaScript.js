@@ -213,12 +213,16 @@ dialog.addEventListener("close", () => {
 
     deleteEllipse.onclick = () => {
             deleteEllipse.appendChild(deleteVar);
+            const cancelDelete = document.getElementById("CancelDelete");
             
             deleteVar.onclick = () => {
                 DeleteDialoge.showModal();
+                cancelDelete.onclick = () => {
+                    DeleteDialoge.close("close");
+                    DeleteConfirm.reset();
+                }
                 DeleteConfirm.onsubmit = (e) => {
                     const DeleteInput = document.getElementById("Deletion").value;
-                    const CancelDelete = document.getElementById("CancelDelete");
                     if (DeleteInput === DeleteReqText) {
                         e.preventDefault();
                         themeList.removeChild(themeRow);
