@@ -171,7 +171,7 @@ dialog.addEventListener("close", () => {
 
 
     const plusBtn = document.createElement("button");
-    plusBtn.classList.add("plusBtn");
+    plusBtn.classList.add("plusBtn1");
     plusBtn.textContent = "+";
     plusBtn.onclick = () => {
         count++;
@@ -182,7 +182,7 @@ dialog.addEventListener("close", () => {
 
     const minusBtn = document.createElement("button");
     minusBtn.textContent = "-";
-    minusBtn.classList.add("minusBtn");
+    minusBtn.classList.add("minusBtn1");
     minusBtn.disabled = true;
     function updateCount() {
         countDisplay.textContent = count;
