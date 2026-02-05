@@ -10,6 +10,16 @@ h1 {
     border-right: 20px;
 }
 
+.plusBtn {
+    position: relative;
+}
+
+.minusBtn {
+    position: relative;
+    left: 43px;
+    bottom: 37.5px;
+}
+
 .counterSection {
     position: relative;
 }
@@ -160,8 +170,8 @@ h1 {
 
 .CustomThemes {
     position: absolute;
-    top: 30px;
-    right: 10px;
+    top: 4.7px;
+    right: 145px;
 }
 
 div#CustomThemeList1 p {
@@ -200,4 +210,10 @@ dialog#HelpButton2 {
     position: absolute;
     top: 5px;
     right: 60px;
+}
+
+.summaryView {
+    position: absolute;
+    top: 4.7px;
+    
 }
