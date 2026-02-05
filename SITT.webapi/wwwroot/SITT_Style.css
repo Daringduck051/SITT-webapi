@@ -4,7 +4,7 @@ h1 {
 }
 
 .boxes {
-    width: 300px;
+    width: 350px;
     font-size: 40px;
     margin-left: 20px; 
     border-right: 20px;
@@ -12,8 +12,6 @@ h1 {
 
 .counterSection {
     position: relative;
-    /*padding-left: 0px;
-    margin: 0px 0;*/
 }
 
 .counterSection::after {
@@ -23,7 +21,6 @@ h1 {
     right: -20px;;
     top: 0px;
     bottom: 0px;
-    /*width: 10000px;*/
     background-color: #000;
 }
 
@@ -38,7 +35,7 @@ h1 {
     right: 12px;
 } */
 
-.CoreSection {
+/* .CoreSection {
     height: 10px;
     position: relative;
 }
@@ -51,9 +48,9 @@ h1 {
     top: 0px;
     bottom: 0px;
     background-color: #000;
-}
+} */
 
-.LMSSection {
+/* .LMSSection {
     height: 10px;
     position: relative;
 }
@@ -66,7 +63,7 @@ h1 {
     top: 0px;
     bottom: 0px;
     background-color: #000;
-}
+} */
 
 /* .LMSPlusButton {
     position: absolute;
@@ -80,10 +77,10 @@ h1 {
     right: 12px;
 } */
 
-.CMSSection {
+/* .CMSSection {
     height: 10px;
     position: relative;
-}
+} */
 
 /* .CMSPlusButton {
     position: absolute;
@@ -97,7 +94,7 @@ h1 {
     right: 12px;
 } */
 
-.CMSSection::after {
+/* .CMSSection::after {
     content: "";
     position:absolute;
     left: -30px;
@@ -120,7 +117,7 @@ h1 {
     top: 0px;
     bottom: 0px;
     background-color: #000;
-}
+} */
 
 /* .EHSPlusButton {
     position: absolute;
@@ -134,7 +131,7 @@ h1 {
     right: 12px;
 } */
 
-.OSHASection {
+/* .OSHASection {
     height: 10px;
     position: relative;
 }
@@ -147,7 +144,7 @@ h1 {
     top: 0px;
     bottom: 0px;
     background-color: #000;
-}
+} */
 
 /* .OSHAPlusButton {
     position: absolute;
