@@ -172,6 +172,7 @@ dialog.addEventListener("close", () => {
 
     const plusBtn = document.createElement("button");
     plusBtn.classList.add("plusBtn1");
+    plusBtn.setAttribute("class", "btn btn-outline-dark");
     plusBtn.textContent = "+";
     plusBtn.onclick = () => {
         count++;
@@ -183,6 +184,7 @@ dialog.addEventListener("close", () => {
     const minusBtn = document.createElement("button");
     minusBtn.textContent = "-";
     minusBtn.classList.add("minusBtn1");
+    minusBtn.setAttribute("class", "btn btn-outline-dark");
     minusBtn.disabled = true;
     function updateCount() {
         countDisplay.textContent = count;
@@ -197,8 +199,9 @@ dialog.addEventListener("close", () => {
         }
     };
 
-    const deleteEllipse = document.createElement("div");
+    const deleteEllipse = document.createElement("button");
     deleteEllipse.classList.add("DeleteEllipse");
+    deleteEllipse.setAttribute("class", "btn btn-outline-*")
     for (let i = 1; i <= 3; i++) {
         const ellipse = document.createElement("div");
         ellipse.classList.add(`Ellipse${i}`);
@@ -208,6 +211,7 @@ dialog.addEventListener("close", () => {
     
     const deleteVar = document.createElement("button");
     deleteVar.classList.add("DeleteVar");
+    deleteVar.setAttribute("class", "btn btn-secondary btn-sm");
     deleteVar.textContent = "Delete";
     const DeleteReqText = "DELETE";
 

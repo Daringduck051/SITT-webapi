@@ -20,8 +20,6 @@ h1 {
     bottom: 37.5px;
 }
 
-div
-
 .DeleteVar {
     font-size: 20px;
 }
@@ -182,16 +180,20 @@ div
     right: 12px;
 } */
 
+.boxes1 {
+    width: 380px;
+}
+
 .CustomThemes {
     position: absolute ;
     top: 4.7px ;
     right: 145px ;
 }
 
-div#CustomThemeList1 p {
+div#CustomThemeList1 p.boxes {
     margin-top: 5px;
     margin-bottom: 5px;
-    width: 300px;
+    width: 350px;
     font-size: 40px;
     margin-left: 20px;
 }
