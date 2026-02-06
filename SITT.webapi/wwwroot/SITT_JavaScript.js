@@ -162,7 +162,6 @@ dialog.addEventListener("close", () => {
 
     let count = 0; 
 
-    debugger;
     const themeText = document.createElement("p");
     themeText.classList.add("boxes")
     themeText.innerHTML = `${newThemeName}: <span class="count-display">0</span>`;
@@ -206,37 +205,41 @@ dialog.addEventListener("close", () => {
         deleteEllipse.appendChild(ellipse);
     }
 
-
+    
     const deleteVar = document.createElement("button");
     deleteVar.classList.add("DeleteVar");
     deleteVar.textContent = "Delete";
     const DeleteReqText = "DELETE";
 
     deleteEllipse.onclick = () => {
+        if (deleteVar.isConnected === true) {
+                deleteEllipse.removeChild(deleteVar);
+        }
+        else {
             deleteEllipse.appendChild(deleteVar);
             const cancelDelete = document.getElementById("CancelDelete");
-            
-            deleteVar.onclick = () => {
-                DeleteDialoge.showModal();
-                cancelDelete.onclick = () => {
-                    DeleteDialoge.close("close");
-                    DeleteConfirm.reset();
-                }
-                DeleteConfirm.onsubmit = (e) => {
-                    const DeleteInput = document.getElementById("Deletion").value;
-                    if (DeleteInput === DeleteReqText) {
-                        e.preventDefault();
-                        themeList.removeChild(themeRow);
-                        DeleteDialoge.close("close");
-                        DeleteConfirm.reset();
-                    }
-                    else if (DeleteInput != DeleteReqText) {
-                            alert("Incorrect input. Please type 'DELETE' to confirm.");
+                    deleteVar.onclick = () => {
+                        DeleteDialoge.showModal();
+                        cancelDelete.onclick = () => {
+                            DeleteDialoge.close("close");
                             DeleteConfirm.reset();
-                        };
+                        }
+                        DeleteConfirm.onsubmit = (e) => {
+                            const DeleteInput = document.getElementById("Deletion").value;
+                            if (DeleteInput === DeleteReqText) {
+                                e.preventDefault();
+                                themeList.removeChild(themeRow);
+                                DeleteDialoge.close("close");
+                                DeleteConfirm.reset();
+                            }
+                            else if (DeleteInput != DeleteReqText) {
+                                    alert("Incorrect input. Please type 'DELETE' to confirm.");
+                                    DeleteConfirm.reset();
+                                };
             };
         };
     };
+};
 
     themeRow.appendChild(deleteEllipse);
     themeRow.appendChild(themeText);

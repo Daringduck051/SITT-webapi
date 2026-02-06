@@ -20,6 +20,20 @@ h1 {
     bottom: 37.5px;
 }
 
+div
+
+.DeleteVar {
+    font-size: 20px;
+}
+
+.plusBtn1 {
+    font-size: 20px;
+}
+
+.minusBtn1 {
+    font-size: 20px;
+}
+
 .counterSection {
     position: relative;
 }
