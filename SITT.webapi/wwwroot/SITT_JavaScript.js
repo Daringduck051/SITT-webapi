@@ -38,6 +38,26 @@ const summaryDialog = document.getElementById("summaryDialog");
 const summaryConfirm = summaryDialog.querySelector("form");
 const summaryClose = document.getElementById("closeSummary");
 
+function updateSpreadsheet() {
+    const tableBody = document.getElementById('table-body');
+    tableBody.innerHTML = "";
+
+    summaryList.forEach((theme, index) => {
+        const row = `
+            <tr>
+                <td>${theme.name}</td>
+                <td>${theme.count}</td>
+            </tr>
+        `;
+        tableBody.innerHTML += row;
+    });
+}
+
+function incrementTheme(idx) {
+    summaryList[idx].count++;
+    updateSpreadsheet();
+}
+
 function updateCoreUI() {
     Coredisplay.textContent = Corecount;
     CoreMinusbutton.disabled = (Corecount === 0);
@@ -59,7 +79,7 @@ function updateCMSUI() {
 function updateEHSUI() {
     EHSdisplay.textContent = EHScount;
     EHSMinusbutton.disabled = (EHScount === 0);
-    EHSPlusbutton.disabled = (EHScount === 300)
+    EHSPlusbutton.disabled = (EHScount === 300);
 }
 
 function updateOSHAUI() {
@@ -78,6 +98,8 @@ let OSHAcount = 0;
 CorePlusbutton.addEventListener("click", () => {
     Corecount++;
     Coredisplay.textContent = Corecount;
+    summaryList[0].count = Corecount;
+    updateSpreadsheet();
     updateCoreUI();
 });
 
@@ -85,38 +107,50 @@ CoreMinusbutton.addEventListener("click", () => {
     if (Corecount > 0) {
         Corecount--;
         Coredisplay.textContent = Corecount;
+        summaryList[0].count = Corecount;
+        updateSpreadsheet();
         updateCoreUI();
     }});
 
 LMSPlusbutton.addEventListener("click", () => {
     LMScount++;
     LMSdisplay.textContent = LMScount;
+    summaryList[1].count = LMScount;
+    updateSpreadsheet();
     updateLMSUI();
 });
 
 LMSMinusbutton.addEventListener("click", () => {
     if (LMScount > 0) {
         LMScount--;
+        summaryList[1].count = LMScount;
         LMSdisplay.textContent = LMScount;
+        updateSpreadsheet();
         updateLMSUI();
     }});
 
 CMSPlusbutton.addEventListener("click", () => {
     CMScount++;
     CMSdisplay.textContent = CMScount;
+    summaryList[2].count = CMScount;
+    updateSpreadsheet();
     updateCMSUI();
 });
 
 CMSMinusbutton.addEventListener("click", () => {
     if (CMScount > 0) {
         CMScount--;
+        summaryList[2].count = CMScount;
         CMSdisplay.textContent = CMScount;
+        updateSpreadsheet();
         updateCMSUI();
     }});
 
 EHSPlusbutton.addEventListener("click", () => {
     EHScount++;
     EHSdisplay.textContent = EHScount;
+    summaryList[3].count = EHScount;
+    updateSpreadsheet();
     updateEHSUI();
 });
 
@@ -124,12 +158,16 @@ EHSMinusbutton.addEventListener("click", () => {
     if (EHScount > 0) {
         EHScount--;
         EHSdisplay.textContent = EHScount;
+        summaryList[3].count = EHScount;
+        updateSpreadsheet();
         updateEHSUI();
     }});
 
 OSHAPlusbutton.addEventListener("click", () => {
     OSHAcount++;
     OSHAdisplay.textContent = OSHAcount;
+    summaryList[4].count = OSHAcount;
+    updateSpreadsheet();
     updateOSHAUI();
 });
 
@@ -137,6 +175,8 @@ OSHAMinusbutton.addEventListener("click", () => {
     if (OSHAcount > 0) {
         OSHAcount--;
         OSHAdisplay.textContent = OSHAcount;
+        summaryList[4].count = OSHAcount;
+        updateSpreadsheet();
         updateOSHAUI();
     }});
 
@@ -156,18 +196,26 @@ dialog.addEventListener("close", () => {
         if (newThemeName !== "") {
   
     const themeRow = document.createElement("div");
+    themeRow.classList.add("text-break");
     themeRow.style.display = "flex";
     themeRow.style.alignItems = "center";
     themeRow.style.gap = "15px";
 
-    let count = 0; 
+    let count = 0;
 
     const themeText = document.createElement("p");
-    themeText.classList.add("boxes")
+    themeText.setAttribute("class", "boxes");
     themeText.innerHTML = `${newThemeName}: <span class="count-display">0</span>`;
     
 
     const countDisplay = themeText.querySelector(".count-display");
+
+    let uniqueID = Date.now();
+    const summaryNew = {
+        id: uniqueID,
+        name: newThemeName,
+        count: count
+    };
 
 
     const plusBtn = document.createElement("button");
@@ -178,6 +226,12 @@ dialog.addEventListener("close", () => {
         count++;
         countDisplay.textContent = count;
         updateCount();
+
+        let themeIndex = summaryList.findIndex(item => item.id === uniqueID);
+        if (themeIndex !== 1) {
+            summaryList[themeIndex].count = count;
+        };
+        updateSpreadsheet();
     };
 
 
@@ -196,6 +250,11 @@ dialog.addEventListener("close", () => {
             count--;
             countDisplay.textContent = count;
             updateCount();
+            let themeIndex = summaryList.findIndex(item => item.id === uniqueID);
+            if (themeIndex !== 1) {
+                summaryList[themeIndex].count = count;
+            };
+            updateSpreadsheet();
         }
     };
 
@@ -245,11 +304,16 @@ dialog.addEventListener("close", () => {
     };
 };
 
+    themeList.setAttribute("class", "text-break");
+
     themeRow.appendChild(deleteEllipse);
     themeRow.appendChild(themeText);
     themeRow.appendChild(plusBtn);
     themeRow.appendChild(minusBtn);
     themeList.appendChild(themeRow);
+
+    summaryList.push(summaryNew);
+    updateSpreadsheet();
 
     themeForm.reset();
 }
@@ -296,3 +360,11 @@ summaryButton.addEventListener("click", () => {
 summaryClose.addEventListener("click", () => {
     summaryDialog.close("cancel")
 });
+
+let summaryList = [
+    {name: "HSI Core", count: Corecount},
+    {name: "LMS HSI", count: LMScount},
+    {name: "CMS", count: CMScount},
+    {name: "EHS", count: EHScount},
+    {name: "OSHA", count: OSHAcount}
+];

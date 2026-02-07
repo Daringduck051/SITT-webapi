@@ -20,17 +20,17 @@
     <div id="HelpButton1">
      <dialog id="HelpButton2">
         <form method="Helpdialog">
-            <p3>This website is designed to help a support agent count the number of interactions per theme happen during their shift.</p3>
+            <p>This website is designed to help a support agent count the number of interactions per theme happen during their shift.</p>
             <p></p>
-            <p3>In order to do so, the agent will click on the "+" button to add an interaction to the respective theme, and the "-" button to remove an interaction from the respective theme.</p3>
+            <p>In order to do so, the agent will click on the "+" button to add an interaction to the respective theme, and the "-" button to remove an interaction from the respective theme.</p>
             <p></p>
-            <p3>To add a custom theme, the agent can click on the "Add Custom Theme" button and fill out the necessary information.</p3>
+            <p>To add a custom theme, the agent can click on the "Add Custom Theme" button and fill out the necessary information.</p>
             <p></p>
-            <p3>To remove the custom theme, the agent can click on the three dots next to the custom theme and select "Remove Theme".</p3>
+            <p>To remove the custom theme, the agent can click on the three dots next to the custom theme and select "Remove Theme".</p>
             <p></p>
-            <p3>Agents can reset all counts to zero by clicking on the "Reset" or "New Shift" button.</p3>
+            <p>Agents can reset all counts to zero by clicking on the "Reset" or "New Shift" button.</p>
             <p></p>
-            <p3>Agents can email the tally data by going into "Summary Mode" and clicking on "Email".</p3>
+            <p>Agents can email the tally data by going into "Summary Mode" and clicking on "Email".</p>
             <p></p>
             <input type="button" id="CloseHelp" value="Close">
         </form>
@@ -40,9 +40,9 @@
         <div class="row">
             <div class="col-6">
             <div class="boxes">
-                <p2>HSI Core: <span id="HSICorePlusDisplay">0</span></p2>
+                <p>HSI Core: <span id="HSICorePlusDisplay">0</span></p>
                 <div class="CoreSection">
-                <p2></p2>
+                <p></p>
                 </div>
             </div>
             <div class="plusBtn"><button class="btn btn-outline-dark" id="HSICorePlusButton">+</button></div>
@@ -52,9 +52,9 @@
             
             <div class="col-6">
             <div class="boxes">
-                <p2>LMS HSI: <span id="LMSDisplay">0</span></p2>
+                <p>LMS HSI: <span id="LMSDisplay">0</span></p>
                 <div class="LMSSection">
-                <p2></p2>
+                <p></p>
                 </div>
             </div>
             <div class="plusBtn"><button class="btn btn-outline-dark" id="LMSPlusButton">+</button></div>
@@ -64,9 +64,9 @@
     <div class="row">
         <div class="col-6">
         <div class="boxes">
-            <p2>CMS: <span id="CMSDisplay">0</span></p2>
+            <p>CMS: <span id="CMSDisplay">0</span></p>
             <div class="CMSSection">
-            <p2></p2>
+            <p></p>
             </div>
         </div>
         <div class="plusBtn"><button class="btn btn-outline-dark" id="CMSPlusButton">+</button></div>
@@ -75,9 +75,9 @@
 
         <div class="col-6">
         <div class="boxes">
-            <p2>EHS: <span id="EHSDisplay">0</span></p2>
+            <p>EHS: <span id="EHSDisplay">0</span></p>
             <div class="EHSSection">
-            <p2></p2>
+            <p></p>
             </div>
         </div>
         <div class="plusBtn"><button class="btn btn-outline-dark" id="EHSPlusButton">+</button></div>
@@ -86,9 +86,9 @@
 
         <div class="col-6">
         <div class="boxes">
-            <p2>OSHA Support: <span id="OSHADisplay">0</span></p2>
+            <p>OSHA Support: <span id="OSHADisplay">0</span></p>
             <div class="OSHASection">
-            <p2></p2>
+            <p></p>
             </div>
         </div>
         </div>
@@ -132,7 +132,7 @@
     <div id="resetBtn">
         <dialog id="resetDialog">
             <form method="ResetDialog">
-                <p3>Are you sure you want to reset?</p3>
+                <p>Are you sure you want to reset?</p>
                 <p></p>
                 <input type="button" id="ConfirmReset" value="Yes">
                 <input type="button" id="CancelReset" value="No">
@@ -146,8 +146,17 @@
     <div id="summaryBtn">
         <dialog id="summaryDialog">
             <form method="SummaryView">
-                <p3>SUMMARY</p3>
-                <p></p>
+                <table id="data-table">
+                    <thead>
+                        <tr>
+                            <th>Theme Name</th>
+                            <th>|</th>
+                            <th>Tallies</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                        </tbody>
+                </table>
                 <input type="button" id="closeSummary" value="Close">
             </form>
         </dialog>
