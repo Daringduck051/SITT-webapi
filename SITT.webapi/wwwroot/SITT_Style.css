@@ -99,3 +99,8 @@ dialog#HelpButton2 {
     top: 4.7px;
     
 }
+
+.emailSummary {
+    position: absolute;
+    right: 20px;
+}
