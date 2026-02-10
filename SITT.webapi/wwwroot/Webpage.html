@@ -150,7 +150,6 @@
                     <thead>
                         <tr>
                             <th>Theme Name</th>
-                            <th>|</th>
                             <th>Tallies</th>
                         </tr>
                     </thead>
@@ -158,7 +157,17 @@
                         </tbody>
                 </table>
                 <input type="button" id="closeSummary" value="Close">
-                <input type="button" class="emailSummary" value="Email">
+                <button type="button" id="emailSummary" value="Email">Email</button>
+            </form>
+        </dialog>
+    </div>
+    <div id="emailButton">
+        <dialog id="emailDialog">
+            <form method="emailView">
+                <p>Email</p>
+                <p></p>
+                <button type="button" id="sendEmail" value="Send">Email</button>
+                <button type="button" id="closeEmail" value="Close">Close</button>
             </form>
         </dialog>
     </div>

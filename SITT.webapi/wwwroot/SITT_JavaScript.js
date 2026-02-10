@@ -37,6 +37,55 @@ const summaryButton = document.getElementById("summaryView");
 const summaryDialog = document.getElementById("summaryDialog");
 const summaryConfirm = summaryDialog.querySelector("form");
 const summaryClose = document.getElementById("closeSummary");
+const emailSummary = document.getElementById("emailSummary");
+const emailDialog = document.getElementById("emailDialog");
+const emailConfirm = emailDialog.querySelector("form");
+const emailClose = document.getElementById("closeEmail");
+const emailSend = document.getElementById("sendEmail");
+
+function exportTableToCSV(filename) {
+    const table = document.getElementById("data-table");
+    let csv = [];
+    const rows = table.querySelectorAll("tr");
+
+    for (const row of rows) {
+        const cols = row.querySelectorAll("td, th");
+        const rowData = [];
+        
+        for (const col of cols) {
+            let data = col.innerText.replace(/"/g, '""'); 
+            rowData.push(`"${data}"`);
+        }
+        csv.push(rowData.join(","));
+    }
+
+    const csvFile = new Blob([csv.join("\n")], { type: "text/csv" });
+    const downloadLink = document.createElement("a");
+    
+    downloadLink.download = filename;
+    downloadLink.href = window.URL.createObjectURL(csvFile);
+    downloadLink.style.display = "none";
+    
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+}
+
+ function disableButtons() {
+                CorePlusbutton.disabled;
+                CoreMinusbutton.disabled;
+                LMSPlusbutton.disabled;
+                LMSMinusbutton.disabled;
+                CMSPlusbutton.disabled;
+                CMSMinusbutton.disabled;
+                EHSPlusbutton.disabled;
+                EHSMinusbutton.disabled;
+                OSHAPlusbutton.disabled;
+                OSHAMinusbutton.disabled;
+                CustomTheme.disabled;
+                plusBtn.disabled;
+                minusBtn.disabled;
+                };
 
 function updateSpreadsheet() {
     const tableBody = document.getElementById('table-body');
@@ -316,6 +365,8 @@ dialog.addEventListener("close", () => {
     updateSpreadsheet();
 
     themeForm.reset();
+
+
 }
     themeForm.reset();
 }
@@ -355,6 +406,20 @@ cancelReset.addEventListener("click", () => {
 
 summaryButton.addEventListener("click", () => {
     summaryDialog.showModal();
+
+    emailSummary.addEventListener("click", () => {
+        emailDialog.showModal();
+            emailSend.addEventListener("click", () => {
+                const now = new Date();
+                const dateString = now.toISOString().slice(0, 10);
+                exportTableToCSV(`data_export_${dateString}.csv`);
+                emailDialog.close("close");
+                disableButtons();
+            });
+            emailClose.addEventListener("click", () => {
+            emailDialog.close("close");
+            });
+        });
 });
 
 summaryClose.addEventListener("click", () => {
@@ -368,3 +433,4 @@ let summaryList = [
     {name: "EHS", count: EHScount},
     {name: "OSHA", count: OSHAcount}
 ];
+
