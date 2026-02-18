@@ -409,17 +409,44 @@ summaryButton.addEventListener("click", () => {
 
     emailSummary.addEventListener("click", () => {
         emailDialog.showModal();
+                    document.getElementById('emailForm').addEventListener('click', async (e) => {
+                    console.log("Submitted");
+                    e.preventDefault();
+                    
+                    const data = {
+                        Subject: document.getElementById('subject').value,
+                        HtmlBody: document.getElementById('body').value
+                    };
+                    try {
+                        const response = await fetch('/api/email/send', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(data)
+                        });
+                        if (response.ok){
+                            alert('Email Sent!');
+                        }
+                        else {
+                            alert("Error sending email.");
+                        };
+                    } 
+                    catch (error) {
+                        console.log("Error: ", error)
+                    }
+                
             emailSend.addEventListener("click", () => {
-                const now = new Date();
-                const dateString = now.toISOString().slice(0, 10);
-                exportTableToCSV(`data_export_${dateString}.csv`);
-                emailDialog.close("close");
-                disableButtons();
+                
+                // const now = new Date();
+                // const dateString = now.toISOString().slice(0, 10);
+                // exportTableToCSV(`data_export_${dateString}.csv`);
+                // emailDialog.close("close");
+                // disableButtons();
             });
             emailClose.addEventListener("click", () => {
             emailDialog.close("close");
             });
         });
+});
 });
 
 summaryClose.addEventListener("click", () => {
@@ -433,4 +460,3 @@ let summaryList = [
     {name: "EHS", count: EHScount},
     {name: "OSHA", count: OSHAcount}
 ];
-
