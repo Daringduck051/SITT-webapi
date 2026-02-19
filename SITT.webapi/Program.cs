@@ -38,23 +38,23 @@ app.UseAuthorization();
 
 app.Run();
 
-PostmarkMessage message = new PostmarkMessage {
-    From = "jpersinger@hsi.com",
-    To = "jpersinger@hsi.com",
-    Subject = "Hello from Postmark",
-    HtmlBody = "<strong>Hello</strong> dear Postmark user.",
-    TextBody = "Hello dear postmark user.",
-    ReplyTo = "jpersinger@hsi.com",
-    TrackOpens = true,
-};
+// PostmarkMessage message = new PostmarkMessage {
+//     From = "jpersinger@hsi.com",
+//     To = "jpersinger@hsi.com",
+//     Subject = "Hello from Postmark",
+//     HtmlBody = "<strong>Hello</strong> dear Postmark user.",
+//     TextBody = "Hello dear postmark user.",
+//     ReplyTo = "jpersinger@hsi.com",
+//     TrackOpens = true,
+// };
 
 
-message.Headers.Add(new PostmarkDotNet.Model.MailHeader("X-Custom-Header", "value"));
+// message.Headers.Add(new PostmarkDotNet.Model.MailHeader("X-Custom-Header", "value"));
 
-PostmarkClient client = new PostmarkClient("POSTMARK_API_TEST");
+// PostmarkClient client = new PostmarkClient("POSTMARK_API_TEST");
 
-PostmarkResponse response = await client.SendMessageAsync(message);
+// PostmarkResponse response = await client.SendMessageAsync(message);
 
-if(response.Status != PostmarkStatus.Success) {
-    Console.WriteLine("Response was: " + response.Message);
-}
+// if(response.Status != PostmarkStatus.Success) {
+//     Console.WriteLine("Response was: " + response.Message);
+// }

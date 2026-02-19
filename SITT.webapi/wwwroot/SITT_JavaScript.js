@@ -42,6 +42,7 @@ const emailDialog = document.getElementById("emailDialog");
 const emailConfirm = emailDialog.querySelector("form");
 const emailClose = document.getElementById("closeEmail");
 const emailSend = document.getElementById("sendEmail");
+const emailForm = emailDialog.querySelector("form");
 
 function exportTableToCSV(filename) {
     const table = document.getElementById("data-table");
@@ -60,32 +61,33 @@ function exportTableToCSV(filename) {
     }
 
     const csvFile = new Blob([csv.join("\n")], { type: "text/csv" });
-    const downloadLink = document.createElement("a");
+
+    const csvString = csv.join("\n");
+
+    const base64Content = btoa(csvString);
+    return base64Content;
+
+    // myBlob = csvFile;
+    // myBlob.text().then(content => {
+    //     console.log("First 100 characters of file:", content.substring(0, 100));
+    // });
+
+    // const myBlobString = myBlob.toString();
+    // const base64 = btoa(myBlobString);
+
+    // const downloadLink = document.createElement("a");
     
-    downloadLink.download = filename;
-    downloadLink.href = window.URL.createObjectURL(csvFile);
-    downloadLink.style.display = "none";
+    // downloadLink.download = filename;
+    // downloadLink.href = window.URL.createObjectURL(csvFile);
+    // downloadLink.style.display = "none";
     
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
+    // document.body.appendChild(downloadLink);
+    // downloadLink.click();
+    // document.body.removeChild(downloadLink);
 }
 
- function disableButtons() {
-                CorePlusbutton.disabled;
-                CoreMinusbutton.disabled;
-                LMSPlusbutton.disabled;
-                LMSMinusbutton.disabled;
-                CMSPlusbutton.disabled;
-                CMSMinusbutton.disabled;
-                EHSPlusbutton.disabled;
-                EHSMinusbutton.disabled;
-                OSHAPlusbutton.disabled;
-                OSHAMinusbutton.disabled;
-                CustomTheme.disabled;
-                plusBtn.disabled;
-                minusBtn.disabled;
-                };
+const now = new Date();
+const dateString = now.toISOString().slice(0, 10);
 
 function updateSpreadsheet() {
     const tableBody = document.getElementById('table-body');
@@ -404,6 +406,24 @@ cancelReset.addEventListener("click", () => {
     resetDialog.close("cancel");
 });
 
+ function disableButtons() {
+    const plusBtn = document.querySelectorAll(".plusBtn1");
+    const minusBtn = document.querySelectorAll(".minusBtn1");
+                CorePlusbutton.disabled = true;
+                CoreMinusbutton.disabled = true;
+                LMSPlusbutton.disabled = true;
+                LMSMinusbutton.disabled= true;
+                CMSPlusbutton.disabled = true;
+                CMSMinusbutton.disabled = true;
+                EHSPlusbutton.disabled = true;
+                EHSMinusbutton.disabled = true;
+                OSHAPlusbutton.disabled = true;
+                OSHAMinusbutton.disabled = true;
+                CustomTheme.disabled = true;
+                plusBtn.forEach(btn => {btn.disabled = true});
+                minusBtn.forEach(btn => {btn.disabled = true});
+                };
+
 summaryButton.addEventListener("click", () => {
     summaryDialog.showModal();
 
@@ -412,10 +432,19 @@ summaryButton.addEventListener("click", () => {
                     document.getElementById('emailForm').addEventListener('click', async (e) => {
                     console.log("Submitted");
                     e.preventDefault();
+                    const base64Content = exportTableToCSV();
                     
                     const data = {
+                        To: "jpersinger@hsi.com",
                         Subject: document.getElementById('subject').value,
-                        HtmlBody: document.getElementById('body').value
+                        HtmlBody: document.getElementById('body').value,
+                        Attachments: [
+                            {
+                                Filename: (`data_export_${dateString}.csv`),
+                                Content: base64Content,
+                                ContentType: "text/csv"
+                            }
+                        ]
                     };
                     try {
                         const response = await fetch('/api/email/send', {
@@ -433,18 +462,10 @@ summaryButton.addEventListener("click", () => {
                     catch (error) {
                         console.log("Error: ", error)
                     }
-                
-            emailSend.addEventListener("click", () => {
-                
-                // const now = new Date();
-                // const dateString = now.toISOString().slice(0, 10);
-                // exportTableToCSV(`data_export_${dateString}.csv`);
-                // emailDialog.close("close");
-                // disableButtons();
-            });
-            emailClose.addEventListener("click", () => {
-            emailDialog.close("close");
-            });
+
+                    disableButtons();
+                    emailDialog.close("close");
+                    emailForm.reset();
         });
 });
 });
