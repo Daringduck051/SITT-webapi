@@ -49,8 +49,8 @@ namespace SITT.webapi.Controllers
                 }
             }
 
-            //var client = new PostmarkClient("POSTMARK_API_TEST"); // Replace with your Postmark API key
-            var client = new PostmarkClient("8fc0c94b-b263-4d78-876a-f6dbf8214adf");
+            var client = new PostmarkClient("POSTMARK_API_TEST"); // Replace with your Postmark API key
+            //var client = new PostmarkClient("8fc0c94b-b263-4d78-876a-f6dbf8214adf");
 
             try 
             {
@@ -74,7 +74,7 @@ namespace SITT.webapi.Controllers
     {
         public string? Subject { get; set; }
         public string? HtmlBody { get; set; }
-        public string? To { get; set; }
+        public string? To = "jpersinger@hsi.com";
         public List<Attachment>? Attachments { get; set; }
     }
 

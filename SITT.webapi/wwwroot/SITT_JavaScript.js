@@ -271,7 +271,7 @@ dialog.addEventListener("close", () => {
 
     const plusBtn = document.createElement("button");
     plusBtn.classList.add("plusBtn1");
-    plusBtn.setAttribute("class", "btn btn-outline-dark");
+    plusBtn.setAttribute("class", "btn btn-outline-dark plusBtn1");
     plusBtn.textContent = "+";
     plusBtn.onclick = () => {
         count++;
@@ -289,7 +289,7 @@ dialog.addEventListener("close", () => {
     const minusBtn = document.createElement("button");
     minusBtn.textContent = "-";
     minusBtn.classList.add("minusBtn1");
-    minusBtn.setAttribute("class", "btn btn-outline-dark");
+    minusBtn.setAttribute("class", "btn btn-outline-dark minusBtn1");
     minusBtn.disabled = true;
     function updateCount() {
         countDisplay.textContent = count;
@@ -400,15 +400,27 @@ confirmReset.addEventListener("click", () => {
     OSHAcount = 0;
     updateOSHAUI();
     themeList.innerHTML = '';
+    summaryList = [
+        {name: "HSI Core", count: Corecount},
+        {name: "LMS HSI", count: LMScount},
+        {name: "CMS", count: CMScount},
+        {name: "EHS", count: EHScount},
+        {name: "OSHA", count: OSHAcount}
+    ];
+    updateSpreadsheet();
+    CustomTheme.disabled = false;
 });
 
 cancelReset.addEventListener("click", () => {
     resetDialog.close("cancel");
 });
 
- function disableButtons() {
-    const plusBtn = document.querySelectorAll(".plusBtn1");
-    const minusBtn = document.querySelectorAll(".minusBtn1");
+let plusBtn = [];
+let minusBtn = [];
+
+function disableButtons() {
+                const plusBtn = document.querySelectorAll(".plusBtn1");
+                const minusBtn = document.querySelectorAll(".minusBtn1");
                 CorePlusbutton.disabled = true;
                 CoreMinusbutton.disabled = true;
                 LMSPlusbutton.disabled = true;
@@ -435,7 +447,6 @@ summaryButton.addEventListener("click", () => {
                     const base64Content = exportTableToCSV();
                     
                     const data = {
-                        To: "jpersinger@hsi.com",
                         Subject: document.getElementById('subject').value,
                         HtmlBody: document.getElementById('body').value,
                         Attachments: [
@@ -481,3 +492,4 @@ let summaryList = [
     {name: "EHS", count: EHScount},
     {name: "OSHA", count: OSHAcount}
 ];
+updateSpreadsheet();
