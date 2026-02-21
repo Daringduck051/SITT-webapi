@@ -107,8 +107,8 @@
                 <p>Enter a Custom Theme Name</p>
                 <input type="text" id="CustomThemeName" placeholder="Enter a custom theme:" maxlength="30" required>
                 <div>
-                <button type="submit" id="SubmitCustomTheme" value="confirm">Save</button>
-                <button id="CancelCustomTheme" value="cancel" formnovalidate>Cancel</button>
+                <button class="btn btn-success btn-sm" type="submit" id="SubmitCustomTheme" value="confirm">Save</button>
+                <button class="btn btn-secondary btn-sm" id="CancelCustomTheme" value="cancel" formnovalidate>Cancel</button>
                 </div>
             </form>
         </dialog>
@@ -120,8 +120,8 @@
             <p>Type 'DELETE' to delete custom theme</p>
             <input type="text" id="Deletion" placeholder="Enter a custom theme:" maxlength="6" required>
             <div>
-            <button class="btn btn-danger" type="submit" id="DeleteRow" value="DELETE">DELETE</button>
-            <button class="btn btn-secondary" type="button" id="CancelDelete" value="delete" formnovalidate>Cancel</button>
+            <button class="btn btn-danger btn-sm" type="submit" id="DeleteRow" value="DELETE">DELETE</button>
+            <button class="btn btn-secondary btn-sm" type="button" id="CancelDelete" value="delete" formnovalidate>Cancel</button>
             </div>
         </form>
     </dialog>
@@ -134,8 +134,8 @@
             <form method="ResetDialog">
                 <p>Are you sure you want to reset?</p>
                 <p></p>
-                <input type="button" id="ConfirmReset" value="Yes">
-                <input type="button" id="CancelReset" value="No">
+                <input class="btn btn-danger btn-sm" type="button" id="ConfirmReset" value="Yes">
+                <input class="btn btn-secondary btn-sm" type="button" id="CancelReset" value="No">
             </form>
         </dialog>
     </div>
@@ -156,8 +156,8 @@
                     <tbody id="table-body">
                         </tbody>
                 </table>
-                <input type="button" id="closeSummary" value="Close">
-                <button type="button" id="emailSummary" value="Email">Email</button>
+                <input class="btn btn-secondary btn-sm" type="button" id="closeSummary" value="Close">
+                <button class="btn btn-secondary btn-sm" type="button" id="emailSummary" value="Email">Email</button>
             </form>
         </dialog>
     </div>

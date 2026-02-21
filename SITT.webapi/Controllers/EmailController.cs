@@ -10,7 +10,7 @@ namespace SITT.webapi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class EmailController : ControllerBase
+    public class EmailController(Appconfig config) : ControllerBase
     {
         [HttpPost("send")]
         public async Task<IActionResult> SendEmail([FromBody] EmailRequest request)
@@ -49,8 +49,8 @@ namespace SITT.webapi.Controllers
                 }
             }
 
-            var client = new PostmarkClient("POSTMARK_API_TEST"); // Replace with your Postmark API key
-            //var client = new PostmarkClient("8fc0c94b-b263-4d78-876a-f6dbf8214adf");
+            //var client = new PostmarkClient("POSTMARK_API_TEST"); // Replace with your Postmark API key
+            var client = new PostmarkClient(config.ApiKey);
 
             try 
             {

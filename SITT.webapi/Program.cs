@@ -6,6 +6,10 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddControllers();
 
+var config = new Appconfig();
+config.ApiKey = builder.Configuration["APIKey"]??throw new InvalidOperationException("Postmark API Key must be configured");
+builder.Services.AddSingleton<Appconfig>(config);
+
 var app = builder.Build();
 
 app.MapControllers();
@@ -38,23 +42,7 @@ app.UseAuthorization();
 
 app.Run();
 
-// PostmarkMessage message = new PostmarkMessage {
-//     From = "jpersinger@hsi.com",
-//     To = "jpersinger@hsi.com",
-//     Subject = "Hello from Postmark",
-//     HtmlBody = "<strong>Hello</strong> dear Postmark user.",
-//     TextBody = "Hello dear postmark user.",
-//     ReplyTo = "jpersinger@hsi.com",
-//     TrackOpens = true,
-// };
-
-
-// message.Headers.Add(new PostmarkDotNet.Model.MailHeader("X-Custom-Header", "value"));
-
-// PostmarkClient client = new PostmarkClient("POSTMARK_API_TEST");
-
-// PostmarkResponse response = await client.SendMessageAsync(message);
-
-// if(response.Status != PostmarkStatus.Success) {
-//     Console.WriteLine("Response was: " + response.Message);
-// }
+public class Appconfig
+{
+    public string ApiKey {get; set;}
+}

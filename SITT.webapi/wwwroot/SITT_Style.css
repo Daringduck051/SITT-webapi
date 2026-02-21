@@ -64,7 +64,7 @@ div#CustomThemeList1 p.boxes {
     margin-left: 20px;
 }
 
-div#HelpButton {
+button#Help {
     position: absolute;
     top: 5px;
     right: 10px;
@@ -103,4 +103,11 @@ dialog#HelpButton2 {
 .emailSummary {
     position: absolute;
     right: 20px;
+}
+
+#emailSummary {
+    background-color: lightgray;
+}
+#emailSummary:hover {
+    background-color: gray;
 }

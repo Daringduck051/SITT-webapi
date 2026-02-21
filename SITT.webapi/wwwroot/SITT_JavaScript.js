@@ -45,6 +45,7 @@ const emailSend = document.getElementById("sendEmail");
 const emailForm = emailDialog.querySelector("form");
 
 function exportTableToCSV(filename) {
+    debugger;
     const table = document.getElementById("data-table");
     let csv = [];
     const rows = table.querySelectorAll("tr");
@@ -59,6 +60,8 @@ function exportTableToCSV(filename) {
         }
         csv.push(rowData.join(","));
     }
+    csv.push("Shift End:");
+    csv.push(time + ", " + dateString);
 
     const csvFile = new Blob([csv.join("\n")], { type: "text/csv" });
 
@@ -87,7 +90,8 @@ function exportTableToCSV(filename) {
 }
 
 const now = new Date();
-const dateString = now.toISOString().slice(0, 10);
+const dateString = now.toLocaleDateString();
+const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
 function updateSpreadsheet() {
     const tableBody = document.getElementById('table-body');
@@ -321,7 +325,7 @@ dialog.addEventListener("close", () => {
     
     const deleteVar = document.createElement("button");
     deleteVar.classList.add("DeleteVar");
-    deleteVar.setAttribute("class", "btn btn-secondary btn-sm");
+    deleteVar.setAttribute("class", "btn btn-danger btn-sm");
     deleteVar.textContent = "Delete";
     const DeleteReqText = "DELETE";
 
