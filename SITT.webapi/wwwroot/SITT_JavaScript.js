@@ -14,25 +14,30 @@ const LMSdisplay = document.getElementById("LMSDisplay");
 const CMSdisplay = document.getElementById("CMSDisplay");
 const EHSdisplay = document.getElementById("EHSDisplay");
 const OSHAdisplay = document.getElementById("OSHADisplay");
+const shiftDisplay = document.getElementById("shiftCounter");
 
 const CustomTheme = document.getElementById("CustomTheme");
 const dialog = document.getElementById("CustomThemeInput");
 const cancelButton = document.getElementById("CancelCustomTheme");
 const themeList = document.getElementById("CustomThemeList1");
 const themeForm = dialog.querySelector("form");
+
 const HelpButton = document.getElementById("Help");
 const HelpText = document.getElementById("HelpButton2");
 const HelpDialoge = HelpText.querySelector("form");
 const CloseHelp = document.getElementById("CloseHelp");
+
 const DeleteEllipse = document.getElementById("DeleteEllipse");
 const DeleteDialoge = document.getElementById("DeleteReq");
 const DeleteConfirm = DeleteDialoge.querySelector("form");
 const deleteRow = document.getElementById("DeleteRow");
+
 const resetButton = document.getElementById("ResetButton");
 const resetDialog = document.getElementById("resetDialog");
 const resetConfirm = resetDialog.querySelector("form");
 const confirmReset = document.getElementById("ConfirmReset");
 const cancelReset = document.getElementById("CancelReset");
+
 const summaryButton = document.getElementById("summaryView");
 const summaryDialog = document.getElementById("summaryDialog");
 const summaryConfirm = summaryDialog.querySelector("form");
@@ -43,6 +48,19 @@ const emailConfirm = emailDialog.querySelector("form");
 const emailClose = document.getElementById("closeEmail");
 const emailSend = document.getElementById("sendEmail");
 const emailForm = emailDialog.querySelector("form");
+
+const navBar = document.querySelector("#navbarDropdown");
+const navMenu = document.querySelector(".dropdown-menu");
+
+const ellipseSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+  <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
+</svg>`;
+
+let containerCount = 3;
+
+const agentDialog = document.getElementById("agentDialog");
+const agentConfirm = agentDialog.querySelector("form");
+const agentCancel = document.getElementById("agentCancel");
 
 function exportTableToCSV(filename) {
     debugger;
@@ -62,6 +80,7 @@ function exportTableToCSV(filename) {
     }
     csv.push("Shift End:");
     csv.push(time + ", " + dateString);
+    csv.push("Shift Number:" + "," + shiftCount);
 
     const csvFile = new Blob([csv.join("\n")], { type: "text/csv" });
 
@@ -106,7 +125,7 @@ function updateSpreadsheet() {
         `;
         tableBody.innerHTML += row;
     });
-}
+};
 
 function incrementTheme(idx) {
     summaryList[idx].count++;
@@ -117,30 +136,59 @@ function updateCoreUI() {
     Coredisplay.textContent = Corecount;
     CoreMinusbutton.disabled = (Corecount === 0);
     CorePlusbutton.disabled = (Corecount === 300);
+    persistence();
 }
 
 function updateLMSUI() {
     LMSdisplay.textContent = LMScount;
     LMSMinusbutton.disabled = (LMScount === 0);
     LMSPlusbutton.disabled = (LMScount === 300);
+    persistence();
 }
 
 function updateCMSUI() {
     CMSdisplay.textContent = CMScount;
     CMSMinusbutton.disabled = (CMScount === 0);
     CMSPlusbutton.disabled = (CMScount === 300);
+    persistence();
 }
 
 function updateEHSUI() {
     EHSdisplay.textContent = EHScount;
     EHSMinusbutton.disabled = (EHScount === 0);
     EHSPlusbutton.disabled = (EHScount === 300);
+    persistence();
 }
 
 function updateOSHAUI() {
     OSHAdisplay.textContent = OSHAcount;
     OSHAMinusbutton.disabled = (OSHAcount === 0);
     OSHAPlusbutton.disabled = (OSHAcount === 300);
+    persistence();
+}
+
+function loadCoreUI() {
+    Coredisplay.textContent = Corecount;
+}
+
+function loadLMSUI() {
+    LMSdisplay.textContent = LMScount;
+}
+
+function loadCMSUI() {
+    CMSdisplay.textContent = LMScount;
+}
+
+function loadEHSUI() {
+    EHSdisplay.textContent = EHScount;
+}
+
+function loadOSHAUI() {
+    OSHAdisplay.textContent = OSHAcount;
+}
+
+function updateShift() {
+    shiftDisplay.textContent = shiftCount;
 }
 
 let Corecount = 0;
@@ -148,6 +196,7 @@ let LMScount = 0;
 let CMScount = 0;
 let EHScount = 0;
 let OSHAcount = 0;
+let shiftCount = 1;
 
 
 CorePlusbutton.addEventListener("click", () => {
@@ -237,35 +286,46 @@ OSHAMinusbutton.addEventListener("click", () => {
 
 CustomTheme.addEventListener("click", () => {
     dialog.showModal();
+    navMenu.classList.toggle("show");
 });
 
 cancelButton.addEventListener("click", () => {
     dialog.close("cancel");
     themeForm.reset();
+    
 });
 
 dialog.addEventListener("close", () => {
-    if (dialog.returnValue === "confirm") {
-        const newThemeName = document.getElementById("CustomThemeName").value;
+    const themeName = document.getElementById("CustomThemeName").value;
+    createCustomTheme(themeName, 0);
+    themeForm.reset();
+});
+
+function createCustomTheme(customName, customCount) {
+        const namePlaceholder = customName;
+        const countPlaceholder = customCount;
+
+        const newThemeName = namePlaceholder;
 
         if (newThemeName !== "") {
   
     const themeRow = document.createElement("div");
-    themeRow.classList.add("text-break");
-    themeRow.style.display = "flex";
-    themeRow.style.alignItems = "center";
-    themeRow.style.gap = "15px";
+    // themeRow.classList.add("col");
+    themeRow.setAttribute("class", "d-flex justify-content-between align-items-center");
+    // themeRow.style.display = "flex";
+    // themeRow.style.alignItems = "center";
+    // themeRow.style.gap = "15px";
 
-    let count = 0;
+    let count = countPlaceholder;
 
     const themeText = document.createElement("p");
     themeText.setAttribute("class", "boxes");
-    themeText.innerHTML = `${newThemeName}: <span class="count-display">0</span>`;
+    themeText.innerHTML = `${newThemeName}: <span class="count-display">${count}</span>`;
     
 
     const countDisplay = themeText.querySelector(".count-display");
 
-    let uniqueID = Date.now();
+    let uniqueID = crypto.randomUUID();
     const summaryNew = {
         id: uniqueID,
         name: newThemeName,
@@ -287,6 +347,7 @@ dialog.addEventListener("close", () => {
             summaryList[themeIndex].count = count;
         };
         updateSpreadsheet();
+        persistence();
     };
 
 
@@ -310,22 +371,30 @@ dialog.addEventListener("close", () => {
                 summaryList[themeIndex].count = count;
             };
             updateSpreadsheet();
+            persistence();
         }
     };
 
-    const deleteEllipse = document.createElement("button");
+    const deleteEllipse = document.createElement("div");
     deleteEllipse.classList.add("DeleteEllipse");
-    deleteEllipse.setAttribute("class", "btn btn-outline-*")
-    for (let i = 1; i <= 3; i++) {
-        const ellipse = document.createElement("div");
-        ellipse.classList.add(`Ellipse${i}`);
-        deleteEllipse.appendChild(ellipse);
-    }
+    deleteEllipse.insertAdjacentHTML('beforeend', ellipseSVG);
+    // deleteEllipse.setAttribute("class", "btn btn-outline-*")
+    // for (let i = 1; i <= 3; i++) {
+    //     const ellipse = document.createElement("div");
+    //     ellipse.classList.add(`Ellipse${i}`);
+    //     deleteEllipse.appendChild(ellipse);
+    // }
+
+    const rightSide = document.createElement("div");
+    rightSide.setAttribute("class", "right-side d-flex justify-content-between align-items-center")
+    rightSide.appendChild(plusBtn);
+    rightSide.appendChild(minusBtn);
+    rightSide.appendChild(deleteEllipse);
 
     
     const deleteVar = document.createElement("button");
     deleteVar.classList.add("DeleteVar");
-    deleteVar.setAttribute("class", "btn btn-danger btn-sm");
+    deleteVar.setAttribute("class", "btn btn-danger btn-sm buttons");
     deleteVar.textContent = "Delete";
     const DeleteReqText = "DELETE";
 
@@ -346,9 +415,19 @@ dialog.addEventListener("close", () => {
                             const DeleteInput = document.getElementById("Deletion").value;
                             if (DeleteInput === DeleteReqText) {
                                 e.preventDefault();
-                                themeList.removeChild(themeRow);
+                                if (container.childElementCount == 2) {
+                                    const newContainer = document.getElementById(`container${containerCount}.1`);
+                                    const newRow = document.getElementById(`container${containerCount}`);
+                                    // newContainer.removeChild(newRow);
+                                    document.body.removeChild(newContainer);
+                                }
+                                else {
+                                    container.removeChild(newCol);
+                                }
                                 DeleteDialoge.close("close");
                                 DeleteConfirm.reset();
+                                updateSpreadsheet();
+                                persistence();
                             }
                             else if (DeleteInput != DeleteReqText) {
                                     alert("Incorrect input. Please type 'DELETE' to confirm.");
@@ -358,29 +437,55 @@ dialog.addEventListener("close", () => {
         };
     };
 };
+    const container = document.getElementById(`container${containerCount}`);
+    let count1 = container.childElementCount;
 
-    themeList.setAttribute("class", "text-break");
+    if (container.childElementCount == 2) {
+        containerCount++;
+    }
 
-    themeRow.appendChild(deleteEllipse);
-    themeRow.appendChild(themeText);
-    themeRow.appendChild(plusBtn);
-    themeRow.appendChild(minusBtn);
-    themeList.appendChild(themeRow);
+    if (count1 == 2) {
+        const newContainer = document.createElement("div");
+        newContainer.setAttribute("class", "container");
+        newContainer.setAttribute("id", `container${containerCount}.1`);
+        const newRow = document.createElement("div");
+        newRow.setAttribute("class", "row");
+        newRow.setAttribute("id", `container${containerCount}`);
+        const newCol = document.createElement("div");
+        newCol.setAttribute("class", "col");
+
+        themeRow.appendChild(themeText);
+        themeRow.appendChild(rightSide);
+        newCol.appendChild(themeRow);
+        newRow.appendChild(newCol);
+        newContainer.appendChild(newRow);
+        document.body.appendChild(newContainer);
+    }
+    else {
+        newCol = document.createElement("div");
+        newCol.setAttribute("class", "col");
+
+        themeRow.appendChild(themeText);
+        themeRow.appendChild(rightSide);
+        newCol.appendChild(themeRow);
+        container.appendChild(newCol);
+    }
+
+    // themeRow.appendChild(themeText);
+    // themeRow.appendChild(rightSide);
+    // // themeRow.appendChild(minusBtn);
+    // // themeRow.appendChild(deleteEllipse);
+    // themeList.appendChild(themeRow);
 
     summaryList.push(summaryNew);
+
     updateSpreadsheet();
-
-    themeForm.reset();
-
-
 }
-    themeForm.reset();
-}
-
-});
+};
 
 HelpButton.addEventListener("click", () => {
     HelpText.showModal();
+    navMenu.classList.toggle("show");
 });
 
 CloseHelp.addEventListener("click", () => {
@@ -389,6 +494,7 @@ CloseHelp.addEventListener("click", () => {
 
 resetButton.addEventListener("click", () => {
     resetDialog.showModal();
+    navMenu.classList.toggle("show");
 });
 
 confirmReset.addEventListener("click", () => {
@@ -403,7 +509,6 @@ confirmReset.addEventListener("click", () => {
     updateEHSUI();
     OSHAcount = 0;
     updateOSHAUI();
-    themeList.innerHTML = '';
     summaryList = [
         {name: "HSI Core", count: Corecount},
         {name: "LMS HSI", count: LMScount},
@@ -412,15 +517,16 @@ confirmReset.addEventListener("click", () => {
         {name: "OSHA", count: OSHAcount}
     ];
     updateSpreadsheet();
+    persistence();
     CustomTheme.disabled = false;
+    location.reload();
+    // shiftCount++;
+    // updateShift();
 });
 
 cancelReset.addEventListener("click", () => {
     resetDialog.close("cancel");
 });
-
-let plusBtn = [];
-let minusBtn = [];
 
 function disableButtons() {
                 const plusBtn = document.querySelectorAll(".plusBtn1");
@@ -442,13 +548,13 @@ function disableButtons() {
 
 summaryButton.addEventListener("click", () => {
     summaryDialog.showModal();
+    navMenu.classList.toggle("show");
 
     emailSummary.addEventListener("click", () => {
         emailDialog.showModal();
                     document.getElementById('emailForm').addEventListener('click', async (e) => {
-                    console.log("Submitted");
-                    e.preventDefault();
                     const base64Content = exportTableToCSV();
+                    e.preventDefault();
                     
                     const data = {
                         Subject: document.getElementById('subject').value,
@@ -480,9 +586,15 @@ summaryButton.addEventListener("click", () => {
 
                     disableButtons();
                     emailDialog.close("close");
+                    summaryDialog.close("cancel");
                     emailForm.reset();
         });
 });
+});
+
+cancelEmail.addEventListener("click", () => {
+    emailDialog.close("close");
+    emailForm.reset();
 });
 
 summaryClose.addEventListener("click", () => {
@@ -490,10 +602,130 @@ summaryClose.addEventListener("click", () => {
 });
 
 let summaryList = [
-    {name: "HSI Core", count: Corecount},
-    {name: "LMS HSI", count: LMScount},
-    {name: "CMS", count: CMScount},
-    {name: "EHS", count: EHScount},
-    {name: "OSHA", count: OSHAcount}
+    {id: 1, name: "HSI Core", count: Corecount},
+    {id: 2, name: "LMS HSI", count: LMScount},
+    {id: 3, name: "CMS", count: CMScount},
+    {id: 4, name: "EHS", count: EHScount},
+    {id: 5, name: "OSHA", count: OSHAcount}
 ];
 updateSpreadsheet();
+
+async function persistence() {
+    const tableData = document.getElementById("table-body");
+    const allNotes = []
+    for (let i = 0; i < tableData.rows.length; i++) {
+        let rowData = {
+            Id: i + 1,
+            Name: tableData.rows[i].cells[0].innerText,
+            Count: parseInt(tableData.rows[i].cells[1].innerText)
+        };
+        allNotes.push(rowData);
+        };
+
+    try {
+    const persistence = await fetch('/notes', {
+        method: 'POST',
+        headers: { 'Content-Type' : 'application/json' },
+        body: JSON.stringify(allNotes)
+    });
+    if (persistence.ok) {
+        
+    }
+    else {
+        console.log("Error persisting data");
+    }
+}    catch (error) {
+    console.log("Error persisting data: ", error);
+}
+};
+
+async function dataRetrieval() {
+    try{
+        const response = await fetch('/notes');
+        if (response.ok) {
+            const data = await response.json();
+
+            data.forEach( item => {
+                const theme = summaryList.find(theme => theme.id === item.id);
+                    
+                    function persistVars() {
+                        if (item.id === 1) {
+                            Corecount = theme.count;
+                        };
+                        if (item.id === 2) {
+                            LMScount = theme.count;
+                        };
+                        if (item.id === 3) {
+                            CMScount = theme.count;
+                        };
+                        if (item.id === 4) {
+                            EHScount = theme.count;
+                        };
+                        if (item.id === 5) {
+                            OSHAcount = theme.count;
+                        };
+                    };
+
+                if (theme) {
+                    theme.count = item.count;
+
+                    persistVars(theme);
+                }
+                else {
+                    createCustomTheme(item.name, item.count);
+                }
+            });
+            updateSpreadsheet();
+            loadCoreUI();
+            loadLMSUI();
+            loadCMSUI();
+            loadEHSUI();
+            loadOSHAUI();
+        };
+    }
+    catch (error) {
+        console.log("Error retrieving data: ", error);
+    }
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+    dataRetrieval();
+    agentDialog.showModal();
+});
+
+agentCancel.addEventListener('click', (e) => {
+    e.preventDefault();
+    agentDialog.close("cancel");
+    agentConfirm.reset();
+});
+
+agentDialog.addEventListener("close", (e) => {
+    debugger;
+
+    if (agentDialog.returnValue === "confirm") {
+        const agentIdentifier = document.getElementById("agentId").value;
+        console.log(agentIdentifier);
+
+        if (agentIdentifier !== "") {
+  
+            const agentId = document.createElement("div");
+            // agentId.classList.add("text-break");
+            // agentId.style.display = "flex";
+            // agentId.style.alignItems = "center";
+            // agentId.style.gap = "15px";
+
+            const themeText = document.createElement("p");
+            themeText.innerHTML = `Agent ID: ${agentIdentifier}`;
+
+            agentId.appendChild(themeText);
+            document.body.appendChild(agentId);
+
+
+}}});
+
+navBar.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    navMenu.classList.toggle("show");
+
+})
