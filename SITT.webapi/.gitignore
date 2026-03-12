@@ -29,4 +29,9 @@ obj/
 .history
 .ionide
 
+# SQLite 
+LocalWebsite.db
+LocalWebsite.db-shm
+LocalWebsite.db-wal
+
 # End of https://www.toptal.com/developers/gitignore/api/dotnetcore,visualstudiocode
