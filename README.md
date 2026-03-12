@@ -12,6 +12,3 @@ dotnet build
 dotnet run
 ```
 
-## License
-[MIT](https://chosealicense.com/license/mit/)
-
