@@ -63,7 +63,7 @@ const agentConfirm = agentDialog.querySelector("form");
 const agentCancel = document.getElementById("agentCancel");
 
 function exportTableToCSV(filename) {
-    debugger;
+    const agentIdentifier = document.getElementById("agentID");
     const table = document.getElementById("data-table");
     let csv = [];
     const rows = table.querySelectorAll("tr");
@@ -78,34 +78,19 @@ function exportTableToCSV(filename) {
         }
         csv.push(rowData.join(","));
     }
+
     csv.push("Shift End:");
     csv.push(time + ", " + dateString);
     csv.push("Shift Number:" + "," + shiftCount);
+    csv.push(agentIdentifier.innerText);
 
     const csvFile = new Blob([csv.join("\n")], { type: "text/csv" });
 
     const csvString = csv.join("\n");
 
     const base64Content = btoa(csvString);
+
     return base64Content;
-
-    // myBlob = csvFile;
-    // myBlob.text().then(content => {
-    //     console.log("First 100 characters of file:", content.substring(0, 100));
-    // });
-
-    // const myBlobString = myBlob.toString();
-    // const base64 = btoa(myBlobString);
-
-    // const downloadLink = document.createElement("a");
-    
-    // downloadLink.download = filename;
-    // downloadLink.href = window.URL.createObjectURL(csvFile);
-    // downloadLink.style.display = "none";
-    
-    // document.body.appendChild(downloadLink);
-    // downloadLink.click();
-    // document.body.removeChild(downloadLink);
 }
 
 const now = new Date();
@@ -332,7 +317,6 @@ function createCustomTheme(customName, customCount) {
         count: count
     };
 
-
     const plusBtn = document.createElement("button");
     plusBtn.classList.add("plusBtn1");
     plusBtn.setAttribute("class", "btn btn-outline-dark plusBtn1");
@@ -349,7 +333,6 @@ function createCustomTheme(customName, customCount) {
         updateSpreadsheet();
         persistence();
     };
-
 
     const minusBtn = document.createElement("button");
     minusBtn.textContent = "-";
@@ -378,12 +361,6 @@ function createCustomTheme(customName, customCount) {
     const deleteEllipse = document.createElement("div");
     deleteEllipse.classList.add("DeleteEllipse");
     deleteEllipse.insertAdjacentHTML('beforeend', ellipseSVG);
-    // deleteEllipse.setAttribute("class", "btn btn-outline-*")
-    // for (let i = 1; i <= 3; i++) {
-    //     const ellipse = document.createElement("div");
-    //     ellipse.classList.add(`Ellipse${i}`);
-    //     deleteEllipse.appendChild(ellipse);
-    // }
 
     const rightSide = document.createElement("div");
     rightSide.setAttribute("class", "right-side d-flex justify-content-between align-items-center")
@@ -391,7 +368,6 @@ function createCustomTheme(customName, customCount) {
     rightSide.appendChild(minusBtn);
     rightSide.appendChild(deleteEllipse);
 
-    
     const deleteVar = document.createElement("button");
     deleteVar.classList.add("DeleteVar");
     deleteVar.setAttribute("class", "btn btn-danger btn-sm buttons");
@@ -414,25 +390,30 @@ function createCustomTheme(customName, customCount) {
                         DeleteConfirm.onsubmit = (e) => {
                             const DeleteInput = document.getElementById("Deletion").value;
                             if (DeleteInput === DeleteReqText) {
+                                console.log(container);
+                                console.log(containerCount);
+                                console.log(container.childElementCount); 
+                                if (container.childElementCount === 0) {
+                                    containerDelete = document.querySelector(`[data-id="${uniqueID}"]`);
+                                    console.log(containerDelete.closest(".container"));
+                                    containerDelete.closest(".container").remove()
+                                }
+                                console.log(uniqueID);
                                 e.preventDefault();
-                                if (container.childElementCount == 2) {
-                                    const newContainer = document.getElementById(`container${containerCount}.1`);
-                                    const newRow = document.getElementById(`container${containerCount}`);
-                                    // newContainer.removeChild(newRow);
-                                    document.body.removeChild(newContainer);
-                                }
-                                else {
-                                    container.removeChild(newCol);
-                                }
+                                const test = document.querySelector(`[data-id="${uniqueID}"]`);
+                                themeRow.removeChild(rightSide);
+                                themeRow.removeChild(themeText);
+                                console.log(test);
+                                test.closest(".col").remove();
                                 DeleteDialoge.close("close");
                                 DeleteConfirm.reset();
                                 updateSpreadsheet();
-                                persistence();
+                                // persistence();
                             }
                             else if (DeleteInput != DeleteReqText) {
                                     alert("Incorrect input. Please type 'DELETE' to confirm.");
                                     DeleteConfirm.reset();
-                                };
+                            };
             };
         };
     };
@@ -453,6 +434,7 @@ function createCustomTheme(customName, customCount) {
         newRow.setAttribute("id", `container${containerCount}`);
         const newCol = document.createElement("div");
         newCol.setAttribute("class", "col");
+        newCol.setAttribute("data-id", uniqueID);
 
         themeRow.appendChild(themeText);
         themeRow.appendChild(rightSide);
@@ -464,18 +446,13 @@ function createCustomTheme(customName, customCount) {
     else {
         newCol = document.createElement("div");
         newCol.setAttribute("class", "col");
+        newCol.setAttribute("data-id", uniqueID);
 
         themeRow.appendChild(themeText);
         themeRow.appendChild(rightSide);
         newCol.appendChild(themeRow);
         container.appendChild(newCol);
     }
-
-    // themeRow.appendChild(themeText);
-    // themeRow.appendChild(rightSide);
-    // // themeRow.appendChild(minusBtn);
-    // // themeRow.appendChild(deleteEllipse);
-    // themeList.appendChild(themeRow);
 
     summaryList.push(summaryNew);
 
@@ -700,28 +677,30 @@ agentCancel.addEventListener('click', (e) => {
 });
 
 agentDialog.addEventListener("close", (e) => {
-    debugger;
 
     if (agentDialog.returnValue === "confirm") {
         const agentIdentifier = document.getElementById("agentId").value;
-        console.log(agentIdentifier);
 
         if (agentIdentifier !== "") {
-  
-            const agentId = document.createElement("div");
-            // agentId.classList.add("text-break");
-            // agentId.style.display = "flex";
-            // agentId.style.alignItems = "center";
-            // agentId.style.gap = "15px";
+            createID(agentIdentifier);
+        }
+    }
+});
 
-            const themeText = document.createElement("p");
-            themeText.innerHTML = `Agent ID: ${agentIdentifier}`;
+function createID(agentID) {
+    const agentId = document.createElement("div");
 
-            agentId.appendChild(themeText);
-            document.body.appendChild(agentId);
+        const themeText = document.createElement("p");
+        themeText.innerHTML = `Agent ID: ${agentID}`;
+        themeText.setAttribute("class", "agentStyle");
+        themeText.setAttribute("id", "agentID");
 
+        agentId.appendChild(themeText);
+        document.body.appendChild(agentId);
+        console.log(agentID);
 
-}}});
+    return agentID;
+};
 
 navBar.addEventListener("click", (e) => {
     e.preventDefault();
