@@ -1,4 +1,10 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using SITT.Data;
+using SITT.Models;
+// using SITT.Services;
+using SITT.Controllers;
+// using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,9 +12,12 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddControllers();
 
-var config = new Appconfig();
-config.ApiKey = builder.Configuration["APIKey"]??throw new InvalidOperationException("Postmark API Key must be configured");
-builder.Services.AddSingleton<Appconfig>(config);
+builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+builder.Services.AddSingleton<ILookupNormalizer, NoOpLookupNormalizer>();
+// builder.Services.AddSingleton<IEmailSender<User>, NoOpEmailSender>();
+
+// builder.Services.AddHttpClient<IEmailSender<User>, PostmarkEmailSender>();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<MyDbContext>(options =>
@@ -16,15 +25,66 @@ builder.Services.AddDbContext<MyDbContext>(options =>
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlite("Data Source=app.db"));
+
+builder.Services.AddDbContext<MyDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddIdentity<User, IdentityRole<int>>()
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders()
+    .AddPasswordValidator<BannedPasswordValidator<User>>();
+
+// builder.Services.AddIdentityApiEndpoints<User>()
+//     .AddRoles<IdentityRole<int>>() 
+//     .AddEntityFrameworkStores<AppDbContext>()
+//     .AddDefaultTokenProviders()
+//     .AddPasswordValidator<BannedPasswordValidator<User>>();
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = IdentityConstants.ApplicationScheme;
+    options.DefaultSignInScheme = IdentityConstants.ApplicationScheme;
+    options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
+});
+
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    // Password settings.
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequiredLength = 8;
+    options.Password.RequiredUniqueChars = 1;
+
+    // Lockout settings.
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.AllowedForNewUsers = true;
+
+    // User settings.
+    options.User.AllowedUserNameCharacters =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+    options.User.RequireUniqueEmail = false;
+});
+
+var config = new Appconfig();
+config.ApiKey = builder.Configuration["APIKey"]??throw new InvalidOperationException("Postmark API Key must be configured");
+builder.Services.AddSingleton(config);
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<MyDbContext>();
-    // This line deletes the old, mismatched database
-    db.Database.EnsureDeleted(); 
-    // This line creates a fresh one with your new Name and Count columns
-    db.Database.EnsureCreated(); 
+    var services = scope.ServiceProvider;
+
+    var persistenceDb = services.GetRequiredService<MyDbContext>();
+    persistenceDb.Database.EnsureCreated();
+
+    var appDb = services.GetRequiredService<AppDbContext>();
+    appDb.Database.EnsureCreated();
 }
 
 // Configure the HTTP request pipeline.
@@ -36,21 +96,18 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseStaticFiles();
-
-// Enable default files (e.g., index.html) to be served when a user visits the root URL.
 app.UseDefaultFiles();
-
-// Enable static files middleware to serve files from wwwroot.
-//app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
-// If using controllers or Razor Pages, you might need these, but not strictly necessary for a simple HTML site
-// app.MapRazorPages(); 
+// app.MapIdentityApi<User>();
+
+app.MapControllers();
+
 app.MapControllerRoute(name: "default", pattern: "{controller=EmailController}/{action=Index}/{id?}");
 
 app.MapGet("/test-save", async (MyDbContext db) =>
@@ -72,6 +129,12 @@ app.MapPost("/notes", async (MyDbContext db, List<Note> notes) =>
     return Results.Ok(notes);
 });
 
+app.MapPost("/check-user", async (UserCheckRequest request, UserManager<User> userManager) => 
+{
+    var user = await userManager.FindByNameAsync(request.Username);
+    return Results.Ok(new { exists = user != null });
+});
+
 app.Run();
 
 public class Appconfig
@@ -88,3 +151,16 @@ public class MyDbContext : DbContext
 
     public DbSet<Note> Notes { get; set; }
 }
+
+public class NoOpLookupNormalizer : ILookupNormalizer
+{
+    public string? NormalizeEmail(string? email) => email;
+    public string? NormalizeName(string? name) => name;
+};
+// public class NoOpEmailSender : IEmailSender<User>
+// {
+//     public Task SendConfirmationLinkAsync(User user, string email, string confirmationLink) => Task.CompletedTask;
+//     public Task SendPasswordResetLinkAsync(User user, string email, string resetLink) => Task.CompletedTask;
+//     public Task SendPasswordResetCodeAsync(User user, string email, string resetCode) => Task.CompletedTask;
+// }
+public record UserCheckRequest(string Username);

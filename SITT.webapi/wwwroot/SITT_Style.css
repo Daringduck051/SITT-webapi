@@ -77,8 +77,6 @@ p {
 
 .minusBtn {
     position: relative;
-    /* left: 43px;
-    bottom: 37.5px; */
     border-radius: 50%;
     width: 36px;
 }
@@ -105,14 +103,6 @@ div#CustomThemeList1 {
     padding: 0;
     width: 100%;
 }
-
-/* div#CustomThemeList1 p.boxes {
-    margin-top: 5px;
-    margin-bottom: 5px;
-    width: 350px;
-    font-size: 30px;
-    margin-left: 5px;
-} */
 
 .buttons {
     width: 60px !important;
@@ -153,6 +143,15 @@ h4 {
     font-size: 15px;
 }
 
+h5 {
+    background-color: #2670b4;
+    color: #ffffff;
+}
+
+a {
+    font-size: 12px;
+}
+
 .dropdown {
     margin-left: 10px !important;
 }
@@ -166,4 +165,57 @@ h4 {
     position: absolute;
     bottom: 5px;
     right: 10px;
+}
+
+.Error {
+    color: red;
+}
+
+#agentDialog {
+    padding-left: 3px;
+    padding-right: 3px;
+    padding-bottom: 16px;
+    padding-top: 2px;
+    border-top-width: 2px;
+    border-right-width: 2px;
+    border-bottom-width: 2px;
+}
+
+#createAgent {
+    padding-left: 3px;
+    padding-right: 3px;
+    padding-bottom: 16px;
+    padding-top: 2px;
+    border-top-width: 2px;
+    border-right-width: 2px;
+    border-bottom-width: 2px;
+}
+
+.agentDropdown {
+    margin-right: 10px;
+}
+
+.agentDrop::before {
+    display: none !important;
+}
+
+.force-left {
+    right: 0 !important;
+    left: auto !important;
+}
+
+.authDialog {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.authBox {
+    border-radius: .5rem !important;
+    box-shadow: 0 4px 4px #00000040 !important;
+    border: 1px solid var(--card-header-border-color) !important;
+    padding: 8px 16px !important;
+    margin-bottom: 24px !important;
+    margin-left: 5px !important;
 }

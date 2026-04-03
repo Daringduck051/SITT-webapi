@@ -5,6 +5,8 @@ using System.IO;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
+using SITT.Models;
 
 namespace SITT.webapi.Controllers
 {
@@ -13,6 +15,7 @@ namespace SITT.webapi.Controllers
     public class EmailController(Appconfig config) : ControllerBase
     {
         [HttpPost("send")]
+        [Authorize]
         public async Task<IActionResult> SendEmail([FromBody] EmailRequest request)
         {
             // 1. Validation

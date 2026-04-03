@@ -56,11 +56,12 @@ const ellipseSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="27" height="2
   <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
 </svg>`;
 
-let containerCount = 3;
+const agentBar = document.querySelector("#agentDropdown");
+const agentMenu = document.querySelector(".agentMenu");
 
-const agentDialog = document.getElementById("agentDialog");
-const agentConfirm = agentDialog.querySelector("form");
-const agentCancel = document.getElementById("agentCancel");
+const signout = document.getElementById("logout");
+
+let containerCount = 3;
 
 function exportTableToCSV(filename) {
     const agentIdentifier = document.getElementById("agentID");
@@ -161,7 +162,7 @@ function loadLMSUI() {
 }
 
 function loadCMSUI() {
-    CMSdisplay.textContent = LMScount;
+    CMSdisplay.textContent = CMScount;
 }
 
 function loadEHSUI() {
@@ -667,44 +668,54 @@ async function dataRetrieval() {
 
 document.addEventListener('DOMContentLoaded', function() {
     dataRetrieval();
-    agentDialog.showModal();
+    const loggedIn = localStorage.getItem("isLoggedIn");
+
+    if (!loggedIn && window.location.pathname.includes("Webpage.html")) {
+        window.location.href = "Login.html";
+    };
+    createID();
 });
 
-agentCancel.addEventListener('click', (e) => {
-    e.preventDefault();
-    agentDialog.close("cancel");
-    agentConfirm.reset();
-});
+signout.addEventListener("click", () => {
+    logout();
+})
 
-agentDialog.addEventListener("close", (e) => {
+function createID() {
+    const agentId = document.getElementById("agentUsername");
+    const agentName = document.createElement("div");
+    const agentLogin = localStorage.getItem("currentUser");
+    console.log(agentLogin);
 
-    if (agentDialog.returnValue === "confirm") {
-        const agentIdentifier = document.getElementById("agentId").value;
+        // const themeText = document.createElement("h1");
+        // themeText.innerHTML = `Agent ID: ${agentID}`;
+        // themeText.setAttribute("class", "agentStyle");
+        // themeText.setAttribute("id", "agentID");
 
-        if (agentIdentifier !== "") {
-            createID(agentIdentifier);
-        }
-    }
-});
+        agentName.innerText = agentLogin;
+        agentName.setAttribute("id", "agentID");
 
-function createID(agentID) {
-    const agentId = document.createElement("div");
+        // agentId.appendChild(themeText);
+        agentId.appendChild(agentName);
+        // console.log(themeText);
 
-        const themeText = document.createElement("p");
-        themeText.innerHTML = `Agent ID: ${agentID}`;
-        themeText.setAttribute("class", "agentStyle");
-        themeText.setAttribute("id", "agentID");
-
-        agentId.appendChild(themeText);
-        document.body.appendChild(agentId);
-        console.log(agentID);
-
-    return agentID;
+    return agentId.innerHTML;
 };
+
+function logout() {
+    localStorage.clear();
+    window.location.href = "Login.html";
+}
 
 navBar.addEventListener("click", (e) => {
     e.preventDefault();
 
     navMenu.classList.toggle("show");
 
-})
+});
+
+agentBar.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    agentMenu.classList.toggle("show");
+
+});
