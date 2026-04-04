@@ -2,9 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using SITT.Data;
 using SITT.Models;
-// using SITT.Services;
+using SITT.Services;
 using SITT.Controllers;
-// using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,9 +15,9 @@ builder.Services.AddControllers();
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddSingleton<ILookupNormalizer, NoOpLookupNormalizer>();
-// builder.Services.AddSingleton<IEmailSender<User>, NoOpEmailSender>();
+builder.Services.AddSingleton<IEmailSender<User>, NoOpEmailSender>();
 
-// builder.Services.AddHttpClient<IEmailSender<User>, PostmarkEmailSender>();
+builder.Services.AddHttpClient<IEmailSender, PostmarkEmailSender>();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<MyDbContext>(options =>
@@ -157,10 +157,10 @@ public class NoOpLookupNormalizer : ILookupNormalizer
     public string? NormalizeEmail(string? email) => email;
     public string? NormalizeName(string? name) => name;
 };
-// public class NoOpEmailSender : IEmailSender<User>
-// {
-//     public Task SendConfirmationLinkAsync(User user, string email, string confirmationLink) => Task.CompletedTask;
-//     public Task SendPasswordResetLinkAsync(User user, string email, string resetLink) => Task.CompletedTask;
-//     public Task SendPasswordResetCodeAsync(User user, string email, string resetCode) => Task.CompletedTask;
-// }
+public class NoOpEmailSender : IEmailSender<User>
+{
+    public Task SendConfirmationLinkAsync(User user, string email, string confirmationLink) => Task.CompletedTask;
+    public Task SendPasswordResetLinkAsync(User user, string email, string resetLink) => Task.CompletedTask;
+    public Task SendPasswordResetCodeAsync(User user, string email, string resetCode) => Task.CompletedTask;
+}
 public record UserCheckRequest(string Username);

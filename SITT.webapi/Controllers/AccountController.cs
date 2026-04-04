@@ -2,26 +2,39 @@ namespace SITT.Controllers;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
+using System.Text;
+using SITT.Services;
 using SITT.Models;
 
-public class AccountController : Controller
+[Route("api/[controller]")]
+[ApiController]
+public class AccountController : ControllerBase
 {
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
+    private readonly IEmailSender _emailSender;
 
     public AccountController(
         UserManager<User> userManager,
-        SignInManager<User> signInManager)
+        SignInManager<User> signInManager,
+        IEmailSender emailSender)
     {
         _userManager = userManager;
         _signInManager = signInManager;
+        _emailSender = emailSender;
     }
 
     [HttpPost]
     [Route("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequest payload)
     {
-        var newUser = new User { UserName = payload.Username };
+        var newUser = new User { 
+            UserName = payload.Username,
+            Email = payload.Email 
+        };
 
         var result = await _userManager.CreateAsync(newUser, payload.Password);
 
@@ -51,26 +64,49 @@ public class AccountController : Controller
         return Unauthorized();
     }
 
+    [HttpPost]
+    [Route("forgot-password")]
+    public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest payload)
+    {
+        var user = await _userManager.FindByNameAsync(payload.Username);
 
-    // [HttpPost]
-    // [Route("forgot-password")]
-    // public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest payload)
-    // {
-    //     var user = await _userManager.FindByNameAsync(payload.Username);
+        if (user == null || string.IsNullOrEmpty(user.Email))
+        {
+            return Ok(new { message = "If an account exists, a reset link has been sent" });
+        }
 
-    //     if (user == null || string.IsNullOrEmpty(user.Email))
-    //     {
-    //         return Ok(new { message = "If an account exists, a reset link has been sent"} );
-    //     }
+        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+        var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+        
+        var resetLink = $"http://localhost:5079/reset-password.html?token={encodedToken}&email={user.Email}";
 
-    //     var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+        await _emailSender.SendPasswordResetLinkAsync(user, user.Email, resetLink);
 
-    //     var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+        return Ok(new { message = "If an account exists, a reset link has been sent." });
+    }
 
-    //     var resetLink = $"http://127.0.0.1:5079/reset-password.html?token={encodedToken}&email={user.Email}";
+    [HttpPost]
+    [Route("reset-password")]
+    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest payload)
+    {
+        var user = await _userManager.FindByEmailAsync(payload.Email);
+        if (user == null)
+        {
+            // Don't reveal if the user exists for security
+            return Ok(new { message = "Password has been reset." });
+        }
 
-    //     await _emailSender.SendPasswordResetLinkAsync(user, user.Email, resetLink);
+        // Decode the token we encoded earlier
+        var decodedTokenBytes = WebEncoders.Base64UrlDecode(payload.Token);
+        var actualToken = Encoding.UTF8.GetString(decodedTokenBytes);
 
-    //     return Ok(new { message = "If an account exists, a reset link has been sent." });
-    // }
+        var result = await _userManager.ResetPasswordAsync(user, actualToken, payload.NewPassword);
+
+        if (result.Succeeded)
+        {
+            return Ok(new { message = "Password has been reset successfully." });
+        }
+
+        return BadRequest(result.Errors);
+    }
 }

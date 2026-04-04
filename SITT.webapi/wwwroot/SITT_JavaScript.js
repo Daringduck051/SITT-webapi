@@ -391,9 +391,6 @@ function createCustomTheme(customName, customCount) {
                         DeleteConfirm.onsubmit = (e) => {
                             const DeleteInput = document.getElementById("Deletion").value;
                             if (DeleteInput === DeleteReqText) {
-                                console.log(container);
-                                console.log(containerCount);
-                                console.log(container.childElementCount); 
                                 if (container.childElementCount === 0) {
                                     containerDelete = document.querySelector(`[data-id="${uniqueID}"]`);
                                     console.log(containerDelete.closest(".container"));
@@ -609,9 +606,6 @@ async function persistence() {
     if (persistence.ok) {
         
     }
-    else {
-        console.log("Error persisting data");
-    }
 }    catch (error) {
     console.log("Error persisting data: ", error);
 }
@@ -684,7 +678,6 @@ function createID() {
     const agentId = document.getElementById("agentUsername");
     const agentName = document.createElement("div");
     const agentLogin = localStorage.getItem("currentUser");
-    console.log(agentLogin);
 
         // const themeText = document.createElement("h1");
         // themeText.innerHTML = `Agent ID: ${agentID}`;

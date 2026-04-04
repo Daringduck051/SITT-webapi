@@ -19,25 +19,28 @@ formForgot.addEventListener("submit", async (e) => {
 
     const user = await verifyIdentityUser(username);
 
+    formForgot.reset();
+
     if (user == true) {
         forgotFormEmail.close();
-        formForgot.reset();
         codeDialog.showModal();
     }
 })
 
 closeForm.addEventListener("click", () => {
     forgotFormEmail.close();
+    formForgot.reset();
 });
 
 cancel.addEventListener("click", () => {
     codeDialog.close();
+    formForgot.reset();
 });
 
 async function verifyIdentityUser(username) {
 
     try {
-        const response = await fetch("/forgot-password", 
+        const response = await fetch("api/account/forgot-password", 
             { 
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -46,10 +49,7 @@ async function verifyIdentityUser(username) {
         
         if (response.ok) {
             const data = await response.json();
-            console.log("User exists in Identity database.");
             return true;
-        } else {
-            console.log("User not found.");
         }
     } catch (error) {
         console.error("Connection failed:", error);

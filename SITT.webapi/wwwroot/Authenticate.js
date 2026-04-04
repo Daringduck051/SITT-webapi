@@ -72,14 +72,14 @@ document.addEventListener('DOMContentLoaded', () => {
 async function registerUser() {
     const loginName = document.getElementById("agentIds").value;
     const loginPassword = document.getElementById("createPass").value;
+    const email = document.getElementById('agentEmail').value;
     const payload = {
         Username: loginName,
         Password: loginPassword,
-        Email: "jpersinger@hsi.com"
+        Email: email
     };
-    console.log(payload);
 
-        const response = await fetch("/register", {
+        const response = await fetch("api/account/register", {
             method: 'POST',
             headers: { 'Content-Type' : 'application/json' },
             body: JSON.stringify(payload)
@@ -121,12 +121,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-async function loginUser(username, password) {
+async function loginUser(username, password, email) {
     try {
-    const response = await fetch("/login", {
+    const response = await fetch("api/account/login", {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ Username: username, Password: password, Email: "jpersinger@hsi.com" })
+        body: JSON.stringify({ Username: username, Password: password })
     });
     
     switch (response.status) {
