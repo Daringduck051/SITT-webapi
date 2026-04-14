@@ -47,7 +47,9 @@ public class BannedPasswordValidator<TUser> : IPasswordValidator<TUser> where TU
 }
 
 public class User : IdentityUser<int>
-{}
+{
+    public ICollection<Note> Notes {get; set;} = [];
+}
 public record LoginRequest(string Username, string Password);
 public record RegisterRequest(string Username, string Password, string Email);
 public record ForgotPasswordRequest(string Username);

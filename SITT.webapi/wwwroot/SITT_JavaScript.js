@@ -618,8 +618,7 @@ async function dataRetrieval() {
             const data = await response.json();
 
             data.forEach( item => {
-                const theme = summaryList.find(theme => theme.id === item.id);
-                    
+                    const theme = summaryList.find(theme => theme.name === item.name);                    
                     function persistVars() {
                         if (item.id === 1) {
                             Corecount = theme.count;
@@ -710,5 +709,4 @@ agentBar.addEventListener("click", (e) => {
     e.preventDefault();
 
     agentMenu.classList.toggle("show");
-
 });

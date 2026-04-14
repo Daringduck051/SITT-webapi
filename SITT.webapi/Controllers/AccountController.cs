@@ -89,6 +89,7 @@ public class AccountController : ControllerBase
     [Route("reset-password")]
     public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest payload)
     {
+        var userId = HttpContext.User.Claims;
         var user = await _userManager.FindByEmailAsync(payload.Email);
         if (user == null)
         {

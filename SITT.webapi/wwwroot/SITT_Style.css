@@ -56,6 +56,10 @@ h1 {
     background-color: #C34B4E;
 }
 
+h2 {
+    font-family: 'Fira Sans', sans-serif;
+}
+
 h3 {
     font-family: 'Fira Sans', sans-serif;
     font-weight: 500;
@@ -219,4 +223,34 @@ a {
     padding: 8px 16px !important;
     margin-bottom: 24px !important;
     margin-left: 5px !important;
+}
+
+#forgotDialog1 {
+    width: 336;
+}
+
+#forgotDialog2 {
+    width: 336px;
+}
+
+.contains {
+  width: 250px; /* Or whatever your desired total width is */
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-left: 0px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.input-row {
+  display: flex;
+  gap: 10px; /* The space between the two inputs */
+}
+
+.input-row input {
+  flex: 1; /* This forces both inputs to take up equal remaining space */
+  min-width: 0; /* Prevents inputs from pushing past container bounds */
 }

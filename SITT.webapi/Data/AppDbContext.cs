@@ -26,6 +26,17 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
 
             entity.Property(u => u.NormalizedUserName)
                 .UseCollation("BINARY");
+
         });
+
+        base.OnModelCreating(builder);
+
+        builder.Entity<Note>()
+            .HasKey(c => new { c.Id, c.UserId }); // Composite Key
+
+        builder.Entity<Note>()
+            .Property(c => c.Id)
+            .ValueGeneratedNever(); // <--- CRITICAL: Stops the +1 behavior
     }
+    public DbSet<Note> Notes { get; set; }
 }

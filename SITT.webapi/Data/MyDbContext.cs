@@ -1,14 +1,14 @@
-using Microsoft.EntityFrameworkCore;
+// using Microsoft.EntityFrameworkCore;
 
-namespace SITT.Data;
+// namespace SITT.Data;
 
-public class MyDbContext : DbContext
-{
-    public MyDbContext(DbContextOptions<MyDbContext> options)
-        : base(options)
-    {
-    }
+// public class MyDbContext : DbContext
+// {
+//     public MyDbContext(DbContextOptions<MyDbContext> options)
+//         : base(options)
+//     {
+//     }
 
-    // This is the bridge to your "Notes" table
-    public DbSet<Note> Notes { get; set; }
-}
+//     // This is the bridge to your "Notes" table
+//     public DbSet<Note> Notes { get; set; }
+// }

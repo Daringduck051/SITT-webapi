@@ -21,6 +21,12 @@
 
     <div id="agentDialog" class="authDialog">
         <form id="agentConfirm" class="authBox" autocomplete="off" autocapitalize="off" data-bs-keyboard="false">
+            <!-- <button type="button" onclick="signIn()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-microsoft" viewBox="0 0 16 16">
+                    <path d="M7.462 0H0v7.19h7.462zM16 0H8.538v7.19H16zM7.462 8.211H0V16h7.462zm8.538 0H8.538V16H16z"/>
+                </svg> Login with Microsoft
+            </button>
+            <h6></h6> -->
             <input type="text" id="agentId" placeholder="Username" maxlength="20" required>
             <h6></h6>
             <input type="password" id="agentPass" placeholder="Password" required>
@@ -55,13 +61,14 @@
         <form method="dialog" id="enterCode" autocomplete="off" data-bs-keyboard="false">
             <h2>Account Recovery</h2>
             <h6></h6>
-            <h3>If account exists, an email has been sent to your email</h3> 
-            <h3>with instructions on how to reset your password</h3>
+            <h3>If account exists, an email has been sent to your email with instructions on how to reset your password</h3>
             <h6></h6>
             <button type="button" id="cancelCode" value="close">Close</button>
         </form>
     </dialog>
     <script src="Authenticate.js" defer></script>
     <script src="Forgot.js" defer></script>
+    <script src="https://alcdn.msauth.net/browser/2.35.0/js/msal-browser.min.js"></script>
+
 </body>
 </html>
