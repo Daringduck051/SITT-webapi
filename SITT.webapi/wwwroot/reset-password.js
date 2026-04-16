@@ -2,9 +2,6 @@ const urlParams = new URLSearchParams(window.location.search);
 const token = urlParams.get('token');
 const email = urlParams.get('email');
 
-console.log("Token:", token);
-console.log("Email:", email);
-
 document.getElementById('resetForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
