@@ -194,14 +194,3 @@ if (validatePass) {
         document.getElementById("confirmPass").setAttribute("type", "password");
     });
 }
-
-// async function signIn() {
-//     try {
-//         const loginResponse = await msalInstance.loginPopup({
-//             scopes: ["user.read"]
-//         });
-//         console.log("Logged in as:", loginResponse.account.username);
-//     } catch (error) {
-//         console.error(error);
-//     }
-// }

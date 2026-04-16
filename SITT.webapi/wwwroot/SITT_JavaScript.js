@@ -61,122 +61,11 @@ const agentMenu = document.querySelector(".agentMenu");
 
 const signout = document.getElementById("logout");
 
-let containerCount = 3;
-
-function exportTableToCSV(filename) {
-    const agentIdentifier = document.getElementById("agentID");
-    const table = document.getElementById("data-table");
-    let csv = [];
-    const rows = table.querySelectorAll("tr");
-
-    for (const row of rows) {
-        const cols = row.querySelectorAll("td, th");
-        const rowData = [];
-        
-        for (const col of cols) {
-            let data = col.innerText.replace(/"/g, '""'); 
-            rowData.push(`"${data}"`);
-        }
-        csv.push(rowData.join(","));
-    }
-
-    csv.push("Shift End:");
-    csv.push(time + ", " + dateString);
-    csv.push("Shift Number:" + "," + shiftCount);
-    csv.push(agentIdentifier.innerText);
-
-    const csvFile = new Blob([csv.join("\n")], { type: "text/csv" });
-
-    const csvString = csv.join("\n");
-
-    const base64Content = btoa(csvString);
-
-    return base64Content;
-}
-
 const now = new Date();
 const dateString = now.toLocaleDateString();
 const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-function updateSpreadsheet() {
-    const tableBody = document.getElementById('table-body');
-    tableBody.innerHTML = "";
-
-    summaryList.forEach((theme, index) => {
-        const row = `
-            <tr>
-                <td>${theme.name}</td>
-                <td>${theme.count}</td>
-            </tr>
-        `;
-        tableBody.innerHTML += row;
-    });
-};
-
-function incrementTheme(idx) {
-    summaryList[idx].count++;
-    updateSpreadsheet();
-}
-
-function updateCoreUI() {
-    Coredisplay.textContent = Corecount;
-    CoreMinusbutton.disabled = (Corecount === 0);
-    CorePlusbutton.disabled = (Corecount === 300);
-    persistence();
-}
-
-function updateLMSUI() {
-    LMSdisplay.textContent = LMScount;
-    LMSMinusbutton.disabled = (LMScount === 0);
-    LMSPlusbutton.disabled = (LMScount === 300);
-    persistence();
-}
-
-function updateCMSUI() {
-    CMSdisplay.textContent = CMScount;
-    CMSMinusbutton.disabled = (CMScount === 0);
-    CMSPlusbutton.disabled = (CMScount === 300);
-    persistence();
-}
-
-function updateEHSUI() {
-    EHSdisplay.textContent = EHScount;
-    EHSMinusbutton.disabled = (EHScount === 0);
-    EHSPlusbutton.disabled = (EHScount === 300);
-    persistence();
-}
-
-function updateOSHAUI() {
-    OSHAdisplay.textContent = OSHAcount;
-    OSHAMinusbutton.disabled = (OSHAcount === 0);
-    OSHAPlusbutton.disabled = (OSHAcount === 300);
-    persistence();
-}
-
-function loadCoreUI() {
-    Coredisplay.textContent = Corecount;
-}
-
-function loadLMSUI() {
-    LMSdisplay.textContent = LMScount;
-}
-
-function loadCMSUI() {
-    CMSdisplay.textContent = CMScount;
-}
-
-function loadEHSUI() {
-    EHSdisplay.textContent = EHScount;
-}
-
-function loadOSHAUI() {
-    OSHAdisplay.textContent = OSHAcount;
-}
-
-function updateShift() {
-    shiftDisplay.textContent = shiftCount;
-}
-
+let containerCount = 3;
 let Corecount = 0;
 let LMScount = 0;
 let CMScount = 0;
@@ -287,6 +176,252 @@ dialog.addEventListener("close", () => {
     themeForm.reset();
 });
 
+HelpButton.addEventListener("click", () => {
+    HelpText.showModal();
+    navMenu.classList.toggle("show");
+});
+
+CloseHelp.addEventListener("click", () => {
+    HelpText.close("close");
+});
+
+resetButton.addEventListener("click", () => {
+    resetDialog.showModal();
+    navMenu.classList.toggle("show");
+});
+
+confirmReset.addEventListener("click", () => {
+    resetDialog.close("close");    
+    Corecount = 0;
+    updateCoreUI();
+    LMScount = 0;
+    updateLMSUI();
+    CMScount = 0;
+    updateCMSUI();
+    EHScount = 0;
+    updateEHSUI();
+    OSHAcount = 0;
+    updateOSHAUI();
+    summaryList = [
+        {name: "HSI Core", count: Corecount},
+        {name: "LMS HSI", count: LMScount},
+        {name: "CMS", count: CMScount},
+        {name: "EHS", count: EHScount},
+        {name: "OSHA", count: OSHAcount}
+    ];
+    updateSpreadsheet();
+    persistence();
+    CustomTheme.disabled = false;
+    location.reload();
+    // shiftCount++;
+    // updateShift();
+});
+
+cancelReset.addEventListener("click", () => {
+    resetDialog.close("cancel");
+});
+
+summaryButton.addEventListener("click", () => {
+    summaryDialog.showModal();
+    navMenu.classList.toggle("show");
+
+    emailSummary.addEventListener("click", () => {
+        emailDialog.showModal();
+                    document.getElementById('emailForm').addEventListener('click', async (e) => {
+                    const base64Content = exportTableToCSV();
+                    e.preventDefault();
+                    
+                    const data = {
+                        Subject: document.getElementById('subject').value,
+                        HtmlBody: document.getElementById('body').value,
+                        Attachments: [
+                            {
+                                Filename: (`data_export_${dateString}.csv`),
+                                Content: base64Content,
+                                ContentType: "text/csv"
+                            }
+                        ]
+                    };
+                    try {
+                        const response = await fetch('/api/email/send', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(data)
+                        });
+                        if (response.ok){
+                            alert('Email Sent!');
+                        }
+                        else {
+                            alert("Error sending email.");
+                        };
+                    } 
+                    catch (error) {
+                        console.log("Error: ", error)
+                    }
+
+                    disableButtons();
+                    emailDialog.close("close");
+                    summaryDialog.close("cancel");
+                    emailForm.reset();
+        });
+});
+});
+
+cancelEmail.addEventListener("click", () => {
+    emailDialog.close("close");
+    emailForm.reset();
+});
+
+summaryClose.addEventListener("click", () => {
+    summaryDialog.close("cancel")
+});
+
+let summaryList = [
+    {id: 1, name: "HSI Core", count: Corecount},
+    {id: 2, name: "LMS HSI", count: LMScount},
+    {id: 3, name: "CMS", count: CMScount},
+    {id: 4, name: "EHS", count: EHScount},
+    {id: 5, name: "OSHA", count: OSHAcount}
+];
+updateSpreadsheet();
+
+document.addEventListener('DOMContentLoaded', function() {
+    dataRetrieval();
+    const loggedIn = localStorage.getItem("isLoggedIn");
+
+    if (!loggedIn && window.location.pathname.includes("Webpage.html")) {
+        window.location.href = "Login.html";
+    };
+    createID();
+});
+
+signout.addEventListener("click", () => {
+    logout();
+})
+
+navBar.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    navMenu.classList.toggle("show");
+
+});
+
+agentBar.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    agentMenu.classList.toggle("show");
+});
+
+function exportTableToCSV(filename) {
+    const agentIdentifier = document.getElementById("agentID");
+    const table = document.getElementById("data-table");
+    let csv = [];
+    const rows = table.querySelectorAll("tr");
+
+    for (const row of rows) {
+        const cols = row.querySelectorAll("td, th");
+        const rowData = [];
+        
+        for (const col of cols) {
+            let data = col.innerText.replace(/"/g, '""'); 
+            rowData.push(`"${data}"`);
+        }
+        csv.push(rowData.join(","));
+    }
+
+    csv.push("Shift End:");
+    csv.push(time + ", " + dateString);
+    csv.push("Shift Number:" + "," + shiftCount);
+    csv.push(agentIdentifier.innerText);
+
+    const csvFile = new Blob([csv.join("\n")], { type: "text/csv" });
+
+    const csvString = csv.join("\n");
+
+    const base64Content = btoa(csvString);
+
+    return base64Content;
+}
+
+function updateSpreadsheet() {
+    const tableBody = document.getElementById('table-body');
+    tableBody.innerHTML = "";
+
+    summaryList.forEach((theme, index) => {
+        const row = `
+            <tr>
+                <td>${theme.name}</td>
+                <td>${theme.count}</td>
+            </tr>
+        `;
+        tableBody.innerHTML += row;
+    });
+};
+
+function incrementTheme(idx) {
+    summaryList[idx].count++;
+    updateSpreadsheet();
+}
+
+function updateCoreUI() {
+    Coredisplay.textContent = Corecount;
+    CoreMinusbutton.disabled = (Corecount === 0);
+    CorePlusbutton.disabled = (Corecount === 300);
+    persistence();
+}
+
+function updateLMSUI() {
+    LMSdisplay.textContent = LMScount;
+    LMSMinusbutton.disabled = (LMScount === 0);
+    LMSPlusbutton.disabled = (LMScount === 300);
+    persistence();
+}
+
+function updateCMSUI() {
+    CMSdisplay.textContent = CMScount;
+    CMSMinusbutton.disabled = (CMScount === 0);
+    CMSPlusbutton.disabled = (CMScount === 300);
+    persistence();
+}
+
+function updateEHSUI() {
+    EHSdisplay.textContent = EHScount;
+    EHSMinusbutton.disabled = (EHScount === 0);
+    EHSPlusbutton.disabled = (EHScount === 300);
+    persistence();
+}
+
+function updateOSHAUI() {
+    OSHAdisplay.textContent = OSHAcount;
+    OSHAMinusbutton.disabled = (OSHAcount === 0);
+    OSHAPlusbutton.disabled = (OSHAcount === 300);
+    persistence();
+}
+
+function loadCoreUI() {
+    Coredisplay.textContent = Corecount;
+}
+
+function loadLMSUI() {
+    LMSdisplay.textContent = LMScount;
+}
+
+function loadCMSUI() {
+    CMSdisplay.textContent = CMScount;
+}
+
+function loadEHSUI() {
+    EHSdisplay.textContent = EHScount;
+}
+
+function loadOSHAUI() {
+    OSHAdisplay.textContent = OSHAcount;
+}
+
+function updateShift() {
+    shiftDisplay.textContent = shiftCount;
+}
+
 function createCustomTheme(customName, customCount) {
         const namePlaceholder = customName;
         const countPlaceholder = customCount;
@@ -296,11 +431,7 @@ function createCustomTheme(customName, customCount) {
         if (newThemeName !== "") {
   
     const themeRow = document.createElement("div");
-    // themeRow.classList.add("col");
     themeRow.setAttribute("class", "d-flex justify-content-between align-items-center");
-    // themeRow.style.display = "flex";
-    // themeRow.style.alignItems = "center";
-    // themeRow.style.gap = "15px";
 
     let count = countPlaceholder;
 
@@ -458,51 +589,6 @@ function createCustomTheme(customName, customCount) {
 }
 };
 
-HelpButton.addEventListener("click", () => {
-    HelpText.showModal();
-    navMenu.classList.toggle("show");
-});
-
-CloseHelp.addEventListener("click", () => {
-    HelpText.close("close");
-});
-
-resetButton.addEventListener("click", () => {
-    resetDialog.showModal();
-    navMenu.classList.toggle("show");
-});
-
-confirmReset.addEventListener("click", () => {
-    resetDialog.close("close");    
-    Corecount = 0;
-    updateCoreUI();
-    LMScount = 0;
-    updateLMSUI();
-    CMScount = 0;
-    updateCMSUI();
-    EHScount = 0;
-    updateEHSUI();
-    OSHAcount = 0;
-    updateOSHAUI();
-    summaryList = [
-        {name: "HSI Core", count: Corecount},
-        {name: "LMS HSI", count: LMScount},
-        {name: "CMS", count: CMScount},
-        {name: "EHS", count: EHScount},
-        {name: "OSHA", count: OSHAcount}
-    ];
-    updateSpreadsheet();
-    persistence();
-    CustomTheme.disabled = false;
-    location.reload();
-    // shiftCount++;
-    // updateShift();
-});
-
-cancelReset.addEventListener("click", () => {
-    resetDialog.close("cancel");
-});
-
 function disableButtons() {
                 const plusBtn = document.querySelectorAll(".plusBtn1");
                 const minusBtn = document.querySelectorAll(".minusBtn1");
@@ -520,70 +606,6 @@ function disableButtons() {
                 plusBtn.forEach(btn => {btn.disabled = true});
                 minusBtn.forEach(btn => {btn.disabled = true});
                 };
-
-summaryButton.addEventListener("click", () => {
-    summaryDialog.showModal();
-    navMenu.classList.toggle("show");
-
-    emailSummary.addEventListener("click", () => {
-        emailDialog.showModal();
-                    document.getElementById('emailForm').addEventListener('click', async (e) => {
-                    const base64Content = exportTableToCSV();
-                    e.preventDefault();
-                    
-                    const data = {
-                        Subject: document.getElementById('subject').value,
-                        HtmlBody: document.getElementById('body').value,
-                        Attachments: [
-                            {
-                                Filename: (`data_export_${dateString}.csv`),
-                                Content: base64Content,
-                                ContentType: "text/csv"
-                            }
-                        ]
-                    };
-                    try {
-                        const response = await fetch('/api/email/send', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(data)
-                        });
-                        if (response.ok){
-                            alert('Email Sent!');
-                        }
-                        else {
-                            alert("Error sending email.");
-                        };
-                    } 
-                    catch (error) {
-                        console.log("Error: ", error)
-                    }
-
-                    disableButtons();
-                    emailDialog.close("close");
-                    summaryDialog.close("cancel");
-                    emailForm.reset();
-        });
-});
-});
-
-cancelEmail.addEventListener("click", () => {
-    emailDialog.close("close");
-    emailForm.reset();
-});
-
-summaryClose.addEventListener("click", () => {
-    summaryDialog.close("cancel")
-});
-
-let summaryList = [
-    {id: 1, name: "HSI Core", count: Corecount},
-    {id: 2, name: "LMS HSI", count: LMScount},
-    {id: 3, name: "CMS", count: CMScount},
-    {id: 4, name: "EHS", count: EHScount},
-    {id: 5, name: "OSHA", count: OSHAcount}
-];
-updateSpreadsheet();
 
 async function persistence() {
     const tableData = document.getElementById("table-body");
@@ -659,20 +681,6 @@ async function dataRetrieval() {
     }
 };
 
-document.addEventListener('DOMContentLoaded', function() {
-    dataRetrieval();
-    const loggedIn = localStorage.getItem("isLoggedIn");
-
-    if (!loggedIn && window.location.pathname.includes("Webpage.html")) {
-        window.location.href = "Login.html";
-    };
-    createID();
-});
-
-signout.addEventListener("click", () => {
-    logout();
-})
-
 function createID() {
     const agentId = document.getElementById("agentUsername");
     const agentName = document.createElement("div");
@@ -697,16 +705,3 @@ function logout() {
     localStorage.clear();
     window.location.href = "Login.html";
 }
-
-navBar.addEventListener("click", (e) => {
-    e.preventDefault();
-
-    navMenu.classList.toggle("show");
-
-});
-
-agentBar.addEventListener("click", (e) => {
-    e.preventDefault();
-
-    agentMenu.classList.toggle("show");
-});
