@@ -33,7 +33,7 @@ public class AccountController : ControllerBase
     {
         var newUser = new User { 
             UserName = payload.Username,
-            Email = payload.Email 
+            Email = payload.Email
         };
 
         var result = await _userManager.CreateAsync(newUser, payload.Password);

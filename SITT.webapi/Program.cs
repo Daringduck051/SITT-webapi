@@ -37,11 +37,8 @@ builder.Services.AddIdentity<User, IdentityRole<int>>()
     .AddDefaultTokenProviders()
     .AddPasswordValidator<BannedPasswordValidator<User>>();
 
-// builder.Services.AddIdentityApiEndpoints<User>()
-//     .AddRoles<IdentityRole<int>>() 
-//     .AddEntityFrameworkStores<AppDbContext>()
-//     .AddDefaultTokenProviders()
-//     .AddPasswordValidator<BannedPasswordValidator<User>>();
+// builder.Services.AddDefaultIdentity<IdentityUser>()
+//     .AddRoles<IdentityRole>();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -71,6 +68,11 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.User.RequireUniqueEmail = false;
 });
 
+builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
+{
+    options.TokenLifespan = TimeSpan.FromMinutes(10);
+});
+
 // builder.Services.AddAuthentication().AddMicrosoftAccount(microsoftOptions =>
 // {
 //     microsoftOptions.ClientId = builder.Configuration["Authentication:Microsoft:ClientId"];
@@ -98,19 +100,13 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
 
-    // var persistenceDb = services.GetRequiredService<MyDbContext>();
-    // persistenceDb.Database.EnsureCreated();
-
     var appDb = services.GetRequiredService<AppDbContext>();
     // appDb.Database.EnsureDeleted();
     appDb.Database.EnsureCreated();
 }
-
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -122,8 +118,6 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
-// app.MapIdentityApi<User>();
 
 app.MapControllers();
 
@@ -181,8 +175,7 @@ app.MapPost("/notes", async (ClaimsPrincipal user, AppDbContext db, List<Note> i
             incomingNote.UserId = userId;
             
             db.Notes.Add(incomingNote);
-            
-            // Add to our local list so the next iteration's Max(Id) is correct
+
             userNotes.Add(incomingNote);
         }
     }

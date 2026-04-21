@@ -21,7 +21,7 @@ public class PostmarkEmailSender : IEmailSender
             From = "jpersinger@hsi.com",
             To = "jpersinger@hsi.com",
             Subject = "Reset your password",
-            HtmlBody = $"<html><body><p>Hello {user.UserName},</p><p>Please reset your password by <a href='{resetLink}'>clicking here</a>.</p></body></html>",
+            HtmlBody = $"<html><body><p>Hello {user.UserName},</p><p>Please reset your password by <a href='{resetLink}'>clicking here</a>.</p><p>Link will expire in 10 minutes</p></body></html>",
             MessageStream = "outbound"
         };
 

@@ -1,12 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PostmarkDotNet; // Make sure your NuGet package is installed!
 using PostmarkDotNet.Model;
-using System.IO;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Text;
 using Microsoft.AspNetCore.Authorization;
-using SITT.Models;
 
 namespace SITT.webapi.Controllers
 {
