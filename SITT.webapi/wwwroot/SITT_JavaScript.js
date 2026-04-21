@@ -193,15 +193,15 @@ resetButton.addEventListener("click", () => {
 confirmReset.addEventListener("click", () => {
     resetDialog.close("close");    
     Corecount = 0;
-    updateCoreUI();
+    loadCoreUI();
     LMScount = 0;
-    updateLMSUI();
+    loadLMSUI();
     CMScount = 0;
-    updateCMSUI();
+    loadCMSUI();
     EHScount = 0;
-    updateEHSUI();
+    loadEHSUI();
     OSHAcount = 0;
-    updateOSHAUI();
+    loadOSHAUI();
     summaryList = [
         {name: "HSI Core", count: Corecount},
         {name: "LMS HSI", count: LMScount},
@@ -213,8 +213,6 @@ confirmReset.addEventListener("click", () => {
     persistence();
     CustomTheme.disabled = false;
     location.reload();
-    // shiftCount++;
-    // updateShift();
 });
 
 cancelReset.addEventListener("click", () => {
@@ -331,8 +329,6 @@ function exportTableToCSV(filename) {
 
     csv.push("Shift End:");
     csv.push(time + ", " + dateString);
-    csv.push("Shift Number:" + "," + shiftCount);
-    csv.push(agentIdentifier.innerText);
 
     const csvFile = new Blob([csv.join("\n")], { type: "text/csv" });
 
@@ -609,7 +605,7 @@ function disableButtons() {
 
 async function persistence() {
     const tableData = document.getElementById("table-body");
-    const allNotes = []
+    const allNotes = [];
     for (let i = 0; i < tableData.rows.length; i++) {
         let rowData = {
             Id: i + 1,
@@ -686,17 +682,10 @@ function createID() {
     const agentName = document.createElement("div");
     const agentLogin = localStorage.getItem("currentUser");
 
-        // const themeText = document.createElement("h1");
-        // themeText.innerHTML = `Agent ID: ${agentID}`;
-        // themeText.setAttribute("class", "agentStyle");
-        // themeText.setAttribute("id", "agentID");
-
         agentName.innerText = agentLogin;
         agentName.setAttribute("id", "agentID");
 
-        // agentId.appendChild(themeText);
         agentId.appendChild(agentName);
-        // console.log(themeText);
 
     return agentId.innerHTML;
 };

@@ -123,14 +123,6 @@ app.MapControllers();
 
 app.MapControllerRoute(name: "default", pattern: "{controller=EmailController}/{action=Index}/{id?}");
 
-app.MapGet("/test-save", async (AppDbContext db) =>
-{
-    var note = new Note { Name = "Persistence is working!" };
-    db.Notes.Add(note);
-    await db.SaveChangesAsync();
-    return $"Saved at {DateTime.Now}";
-});
-
 app.MapGet("/notes", async (ClaimsPrincipal user, AppDbContext db) => 
 {
     int userId = user.GetUserId();
@@ -162,6 +154,14 @@ app.MapPost("/notes", async (ClaimsPrincipal user, AppDbContext db, List<Note> i
         {
             // UPDATE: Modify the tracked object directly
             existing.Count = incomingNote.Count;
+
+            if (existing.Id <= 5 && incomingNote.Id < 5)
+            {
+                // If new shift, we need to remove custom themes
+                var customThemes = userNotes.Where(n => n.Id > 5).ToList();
+                db.Notes.RemoveRange(customThemes);
+                userNotes.RemoveAll(n => n.Id > 5);
+            }
         }
         else
         {
