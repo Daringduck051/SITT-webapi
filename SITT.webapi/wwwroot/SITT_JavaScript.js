@@ -433,6 +433,7 @@ function createCustomTheme(customName, customCount) {
 
     const themeText = document.createElement("p");
     themeText.setAttribute("class", "boxes");
+    themeText.setAttribute("id", newThemeName);
     themeText.innerHTML = `${newThemeName}: <span class="count-display">${count}</span>`;
     
 
@@ -518,13 +519,8 @@ function createCustomTheme(customName, customCount) {
                         DeleteConfirm.onsubmit = (e) => {
                             const DeleteInput = document.getElementById("Deletion").value;
                             if (DeleteInput === DeleteReqText) {
-                                if (container.childElementCount === 0) {
-                                    containerDelete = document.querySelector(`[data-id="${uniqueID}"]`);
-                                    console.log(containerDelete.closest(".container"));
-                                    containerDelete.closest(".container").remove()
-                                }
-                                console.log(uniqueID);
                                 e.preventDefault();
+
                                 const test = document.querySelector(`[data-id="${uniqueID}"]`);
                                 themeRow.removeChild(rightSide);
                                 themeRow.removeChild(themeText);
@@ -532,17 +528,18 @@ function createCustomTheme(customName, customCount) {
                                 test.closest(".col").remove();
                                 DeleteDialoge.close("close");
                                 DeleteConfirm.reset();
-                                updateSpreadsheet();
-                                // persistence();
+
+                                removeRowByName(newThemeName);
+                                persistence();
                             }
                             else if (DeleteInput != DeleteReqText) {
                                     alert("Incorrect input. Please type 'DELETE' to confirm.");
                                     DeleteConfirm.reset();
-                            };
-            };
-        };
-    };
-};
+                            }
+                        }
+                    }
+            }
+    }
     const container = document.getElementById(`container${containerCount}`);
     let count1 = container.childElementCount;
 
@@ -582,8 +579,28 @@ function createCustomTheme(customName, customCount) {
     summaryList.push(summaryNew);
 
     updateSpreadsheet();
-}
+    }
 };
+
+function removeRowByName(targetName) {
+    const rows = document.querySelectorAll("table tbody tr");
+    console.log(rows);
+
+    rows.forEach(row => {
+        const nameCell = row.querySelector("td"); 
+        console.log(nameCell);
+
+        if (nameCell) {
+            if (nameCell.innerText.trim() === targetName.trim()) {
+                const closeRow = nameCell.closest("tr");
+                console.log(nameCell.innerText.trim());
+                console.log(closeRow);
+                row.remove(closeRow);
+            }
+        }
+    });
+}
+
 
 function disableButtons() {
                 const plusBtn = document.querySelectorAll(".plusBtn1");
