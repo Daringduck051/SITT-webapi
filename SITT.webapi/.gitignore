@@ -39,5 +39,7 @@ app.db-shm
 app.db-wal
 
 /Migrations
- 
+
+/vs
+
 # End of https://www.toptal.com/developers/gitignore/api/dotnetcore,visualstudiocode
