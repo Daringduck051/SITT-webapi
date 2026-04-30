@@ -30,16 +30,12 @@ obj/
 .ionide
 
 # SQLite 
-LocalWebsite.db
-LocalWebsite.db-shm
-LocalWebsite.db-wal
-
 app.db
 app.db-shm
 app.db-wal
 
 /Migrations
 
-/vs
+/.vs
 
 # End of https://www.toptal.com/developers/gitignore/api/dotnetcore,visualstudiocode
