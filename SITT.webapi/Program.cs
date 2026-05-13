@@ -68,10 +68,10 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.User.RequireUniqueEmail = true;
 });
 
-builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
-{
-    options.TokenLifespan = TimeSpan.FromMinutes(10);
-});
+// builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
+// {
+//     options.TokenLifespan = TimeSpan.FromMinutes(10);
+// });
 
 // builder.Services.AddAuthentication().AddMicrosoftAccount(microsoftOptions =>
 // {

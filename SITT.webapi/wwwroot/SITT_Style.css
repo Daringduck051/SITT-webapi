@@ -7,8 +7,10 @@
 }
 
 .navBar {
-    background-color: #2670b4;
+    background-color: rgb(38, 112, 180);
     padding-top: 0px;
+    height: 60px;
+    padding-bottom: 0px;
 }
 
 .btn-outline-light {
@@ -41,10 +43,11 @@
 }
 
 h1 {
-    margin-left: 40px !important;
     margin-bottom: 0px !important;
     font-family: 'Fira Sans', sans-serif !important;
-    font-size: 24px !important;
+    font-size: 1.25rem !important;
+    text-transform: uppercase;
+    font-weight: bolder;
     color: #ffffff !important;
 }
 
@@ -73,6 +76,17 @@ p {
 
 .navButton {
     font-family: 'Fira Sans', sans-serif;
+}
+.navButton:hover {
+    background-color: rgb(237, 236, 236);
+}
+
+.dropdownMenu {
+    margin-top: 10px;
+}
+
+.helpDropdown {
+    margin-top: 10px;
 }
 
 .plusBtn {
@@ -107,6 +121,30 @@ p {
 div#CustomThemeList1 {
     padding: 0;
     width: 100%;
+}
+
+.customTheme:disabled {
+    color: black;
+    pointer-events: none;
+    background-color: var(--bs-btn-disabled-bg);
+    border-color: var(--bs-btn-disabled-border-color);
+    opacity: var(--bs-btn-disabled-opacity);
+}
+
+.orangeBar {
+    position: relative;
+    color: white;
+    margin-bottom: 15px;
+}
+
+.orangeBar::after {
+    content: "";
+    position:absolute;
+    top: 2px;
+    bottom: 0px;
+    height: 4px;
+    width: 100vw;
+    background-color: rgb(253, 142, 94);
 }
 
 .buttons {

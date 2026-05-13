@@ -26,6 +26,8 @@ const HelpButton = document.getElementById("Help");
 const HelpText = document.getElementById("HelpButton2");
 const HelpDialoge = HelpText.querySelector("form");
 const CloseHelp = document.getElementById("CloseHelp");
+const helpBar = document.querySelector("#helpDropdown");
+const helpMenu = document.querySelector(".helpMenu");
 
 const DeleteEllipse = document.getElementById("DeleteEllipse");
 const DeleteDialoge = document.getElementById("DeleteReq");
@@ -178,7 +180,7 @@ dialog.addEventListener("close", () => {
 
 HelpButton.addEventListener("click", () => {
     HelpText.showModal();
-    navMenu.classList.toggle("show");
+    helpMenu.classList.toggle("show");
 });
 
 CloseHelp.addEventListener("click", () => {
@@ -193,14 +195,14 @@ resetButton.addEventListener("click", () => {
 confirmReset.addEventListener("click", () => {
     resetDialog.close("close");    
     Corecount = 0;
-    loadCoreUI();
     LMScount = 0;
-    loadLMSUI();
     CMScount = 0;
-    loadCMSUI();
     EHScount = 0;
-    loadEHSUI();
     OSHAcount = 0;
+    loadCoreUI();
+    loadLMSUI();
+    loadCMSUI();
+    loadEHSUI();
     loadOSHAUI();
     summaryList = [
         {name: "HSI Core", count: Corecount},
@@ -281,7 +283,7 @@ let summaryList = [
     {id: 4, name: "EHS", count: EHScount},
     {id: 5, name: "OSHA", count: OSHAcount}
 ];
-updateSpreadsheet();
+// updateSpreadsheet();
 
 document.addEventListener('DOMContentLoaded', function() {
     dataRetrieval();
@@ -301,13 +303,18 @@ navBar.addEventListener("click", (e) => {
     e.preventDefault();
 
     navMenu.classList.toggle("show");
-
 });
 
 agentBar.addEventListener("click", (e) => {
     e.preventDefault();
 
     agentMenu.classList.toggle("show");
+});
+
+helpBar.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    helpMenu.classList.toggle("show");
 });
 
 function exportTableToCSV(filename) {
@@ -354,11 +361,6 @@ function updateSpreadsheet() {
     });
 };
 
-function incrementTheme(idx) {
-    summaryList[idx].count++;
-    updateSpreadsheet();
-}
-
 function updateCoreUI() {
     Coredisplay.textContent = Corecount;
     CoreMinusbutton.disabled = (Corecount === 0);
@@ -396,22 +398,27 @@ function updateOSHAUI() {
 
 function loadCoreUI() {
     Coredisplay.textContent = Corecount;
+    CoreMinusbutton.disabled = (Corecount === 0);
 }
 
 function loadLMSUI() {
     LMSdisplay.textContent = LMScount;
+    LMSMinusbutton.disabled = (LMScount === 0);
 }
 
 function loadCMSUI() {
     CMSdisplay.textContent = CMScount;
+    CMSMinusbutton.disabled = (CMScount === 0);
 }
 
 function loadEHSUI() {
     EHSdisplay.textContent = EHScount;
+    EHSMinusbutton.disabled = (EHScount === 0);
 }
 
 function loadOSHAUI() {
     OSHAdisplay.textContent = OSHAcount;
+    OSHAMinusbutton.disabled = (OSHAcount === 0);
 }
 
 function updateShift() {
@@ -487,6 +494,8 @@ function createCustomTheme(customName, customCount) {
         }
     };
 
+    updateCount();
+
     const deleteEllipse = document.createElement("div");
     deleteEllipse.classList.add("DeleteEllipse");
     deleteEllipse.insertAdjacentHTML('beforeend', ellipseSVG);
@@ -524,12 +533,12 @@ function createCustomTheme(customName, customCount) {
                                 const test = document.querySelector(`[data-id="${uniqueID}"]`);
                                 themeRow.removeChild(rightSide);
                                 themeRow.removeChild(themeText);
-                                console.log(test);
                                 test.closest(".col").remove();
                                 DeleteDialoge.close("close");
                                 DeleteConfirm.reset();
 
                                 removeRowByName(newThemeName);
+                                summaryList = summaryList.filter(item => item.id !== uniqueID);
                                 persistence();
                             }
                             else if (DeleteInput != DeleteReqText) {
@@ -584,23 +593,18 @@ function createCustomTheme(customName, customCount) {
 
 function removeRowByName(targetName) {
     const rows = document.querySelectorAll("table tbody tr");
-    console.log(rows);
 
     rows.forEach(row => {
         const nameCell = row.querySelector("td"); 
-        console.log(nameCell);
 
         if (nameCell) {
             if (nameCell.innerText.trim() === targetName.trim()) {
                 const closeRow = nameCell.closest("tr");
-                console.log(nameCell.innerText.trim());
-                console.log(closeRow);
                 row.remove(closeRow);
             }
         }
     });
 }
-
 
 function disableButtons() {
                 const plusBtn = document.querySelectorAll(".plusBtn1");
