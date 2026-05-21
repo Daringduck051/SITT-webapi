@@ -2,12 +2,13 @@ using Microsoft.AspNetCore.Mvc;
 using PostmarkDotNet; // Make sure your NuGet package is installed!
 using PostmarkDotNet.Model;
 using Microsoft.AspNetCore.Authorization;
+using SITT.Config;
 
 namespace SITT.webapi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class EmailController(Appconfig config) : ControllerBase
+    public class EmailController(AppConfig config) : ControllerBase
     {
         [HttpPost("send")]
         [Authorize]

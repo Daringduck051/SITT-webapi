@@ -1,14 +1,15 @@
 using Microsoft.AspNetCore.Identity;
 using SITT.Models;
+using SITT.Config;
 
 namespace SITT.Services;
 
 public class PostmarkEmailSender : IEmailSender
 {
     private readonly HttpClient _httpClient;
-    private readonly string _apikey;
+    private readonly string? _apikey;
 
-    public PostmarkEmailSender(HttpClient httpClient, Appconfig config)
+    public PostmarkEmailSender(HttpClient httpClient, AppConfig config)
     {
         _httpClient = httpClient;
         _apikey = config.ApiKey;
@@ -29,7 +30,7 @@ public class PostmarkEmailSender : IEmailSender
         {
             Headers = 
             {
-                { "X-Postmark-Server-Token", _apikey },
+                { "X-Postmark-Server-Token", _apikey ?? string.Empty },
                 { "Accept", "application/json" }
             },
             Content = JsonContent.Create(payload)
