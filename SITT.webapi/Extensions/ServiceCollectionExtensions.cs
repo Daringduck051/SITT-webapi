@@ -81,6 +81,8 @@ var config = new AppConfig();
 config.ApiKey = builder.Configuration["APIKey"]??throw new InvalidOperationException("Postmark API Key must be configured");
 builder.Services.AddSingleton(config);
 
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+
 builder.Services.AddHttpsRedirection(options =>
 {
     options.HttpsPort = 7240;

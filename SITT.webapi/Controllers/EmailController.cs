@@ -3,13 +3,22 @@ using PostmarkDotNet; // Make sure your NuGet package is installed!
 using PostmarkDotNet.Model;
 using Microsoft.AspNetCore.Authorization;
 using SITT.Config;
+using Microsoft.Extensions.Options;
 
 namespace SITT.webapi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class EmailController(AppConfig config) : ControllerBase
+    public class EmailController : ControllerBase
     {
+        private readonly AppConfig _config;
+        private readonly EmailSettings _emailSettings;
+
+        public EmailController(AppConfig config, IOptions<EmailSettings> emailSettingsOptions)
+        {
+            _config = config;
+            _emailSettings = emailSettingsOptions.Value;
+        }
         [HttpPost("send")]
         [Authorize]
         public async Task<IActionResult> SendEmail([FromBody] EmailRequest request)
@@ -22,8 +31,8 @@ namespace SITT.webapi.Controllers
             // 2. Postmark Logic (Moved directly into the controller)
             var message = new PostmarkMessage()
             {
-                To = "jpersinger@hsi.com", // Replace with your recipient
-                From = "jpersinger@hsi.com", // Replace with your Postmark sender
+                To = _emailSettings.ToAddress,
+                From = _emailSettings.FromAddress,
                 Subject = request.Subject,
                 TextBody = request.HtmlBody,
                 Headers = new HeaderCollection(),
@@ -49,7 +58,7 @@ namespace SITT.webapi.Controllers
             }
 
             //var client = new PostmarkClient("POSTMARK_API_TEST"); // Replace with your Postmark API key
-            var client = new PostmarkClient(config.ApiKey);
+            var client = new PostmarkClient(_config.ApiKey);
 
             try 
             {
@@ -69,11 +78,11 @@ namespace SITT.webapi.Controllers
     }
 
     // This class must exist for the [FromBody] to work
-    public class EmailRequest 
+    public class EmailRequest
     {
         public string? Subject { get; set; }
         public string? HtmlBody { get; set; }
-        public string? To = "jpersinger@hsi.com";
+        public string? To { get; set; }
         public List<Attachment>? Attachments { get; set; }
     }
 
