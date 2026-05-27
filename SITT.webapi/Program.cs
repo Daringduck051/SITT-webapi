@@ -7,7 +7,7 @@ builder.Services.AddSITTServices(builder);
 
 var app = builder.Build();
 
-app.EnsureDatabaseCreated();
+// app.EnsureDatabaseCreated();
 app.ConfigureMiddleware();
 app.MapNoteEndpoints();
 app.MapUserEndpoints();
