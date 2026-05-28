@@ -1,36 +1,57 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import TallyCard from './components/TallyCard.jsx'
+import './App.css'
+
+const DEFAULT_CATEGORIES = [
+  { id: 1, name: 'HSI Core', count: 0 },
+  { id: 2, name: 'LMS HSI', count: 0 },
+  { id: 3, name: 'CMS', count: 0 },
+  { id: 4, name: 'EHS', count: 0 },
+  { id: 5, name: 'OSHA Support', count: 0 },
+]
 
 function App() {
-  const [rawJson, setRawJson] = useState('Loading...')
-  const [error, setError] = useState('')
+  const [categories, setCategories] = useState(DEFAULT_CATEGORIES)
 
-  useEffect(() => {
-    const loadNotes = async () => {
-      try {
-        const response = await fetch('/notes')
-        const text = await response.text()
+  const updateCount = (id, delta) => {
+    setCategories((prev) =>
+      prev.map((category) => {
+        if (category.id !== id) return category
+        const next = Math.max(0, Math.min(300, category.count + delta))
+        return { ...category, count: next }
+      }),
+    )
+  }
 
-        if (!response.ok) {
-          setError(`Request failed: ${response.status} ${response.statusText}`)
-          setRawJson(text || '(empty response body)')
-          return
-        }
-
-        setRawJson(text || '(empty response body)')
-      } catch (err) {
-        setError(`Network error: ${err instanceof Error ? err.message : String(err)}`)
-      }
-    }
-
-    loadNotes()
-  }, [])
+  const resetAll = () => {
+    setCategories((prev) => prev.map((category) => ({ ...category, count: 0 })))
+  }
 
   return (
-    <main style={{ padding: '1rem', fontFamily: 'monospace' }}>
-      <h1>Notes API Test</h1>
-      <p>GET /notes via Vite proxy</p>
-      {error ? <p style={{ color: 'crimson' }}>{error}</p> : null}
-      <pre style={{ whiteSpace: 'pre-wrap' }}>{rawJson}</pre>
+    <main className="tally-page">
+      <header className="tally-navbar">
+        <button className="nav-icon" type="button" aria-label="Menu">
+          ☰
+        </button>
+        <h1 className="tally-title">Support Interaction Theme Tally</h1>
+        <button className="reset-btn" type="button" onClick={resetAll}>
+          New Shift
+        </button>
+      </header>
+
+      <div className="orange-bar" />
+
+      <section className="tally-grid">
+        {categories.map((category) => (
+          <TallyCard
+            key={category.id}
+            name={category.name}
+            count={category.count}
+            onIncrement={() => updateCount(category.id, 1)}
+            onDecrement={() => updateCount(category.id, -1)}
+          />
+        ))}
+      </section>
     </main>
   )
 }
