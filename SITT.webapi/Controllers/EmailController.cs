@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using PostmarkDotNet; // Make sure your NuGet package is installed!
 using PostmarkDotNet.Model;
-using Microsoft.AspNetCore.Authorization;
 using SITT.Config;
 using Microsoft.Extensions.Options;
 
@@ -14,7 +14,9 @@ namespace SITT.webapi.Controllers
         private readonly AppConfig _config;
         private readonly EmailSettings _emailSettings;
 
-        public EmailController(AppConfig config, IOptions<EmailSettings> emailSettingsOptions)
+        public EmailController(
+            AppConfig config,
+            IOptions<EmailSettings> emailSettingsOptions)
         {
             _config = config;
             _emailSettings = emailSettingsOptions.Value;
@@ -44,6 +46,11 @@ namespace SITT.webapi.Controllers
             {
                 foreach (var a in request.Attachments)
                 {
+                    if (string.IsNullOrWhiteSpace(a.Content))
+                    {
+                        continue;
+                    }
+
                     string cleanBase64 = a.Content.Trim();
                     byte[] fileBytes = Convert.FromBase64String(cleanBase64);
 

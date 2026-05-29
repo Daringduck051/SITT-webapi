@@ -1,8 +1,48 @@
-import React from "react";
+import { useEffect, useRef, useState } from "react";
 
-function TallyCard({ name, count, onIncrement, onDecrement, maxCount = 300 }) {
+function TallyCard({
+  name,
+  count,
+  onIncrement,
+  onDecrement,
+  onRequestDelete,
+  isCustom = false,
+  maxCount = 300,
+}) {
   const isMin = count <= 0;
   const isMax = count >= maxCount;
+  const [isThemeMenuOpen, setIsThemeMenuOpen] = useState(false);
+  const themeMenuRef = useRef(null);
+
+  useEffect(() => {
+    if (!isThemeMenuOpen) return;
+
+    const handleClickOutside = (event) => {
+      if (!themeMenuRef.current) return;
+      if (!themeMenuRef.current.contains(event.target)) {
+        setIsThemeMenuOpen(false);
+      }
+    };
+
+    const handleEscape = (event) => {
+      if (event.key === "Escape") {
+        setIsThemeMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [isThemeMenuOpen]);
+
+  const handleRemoveTheme = () => {
+    setIsThemeMenuOpen(false);
+    onRequestDelete();
+  };
 
   return (
     <article className="tally-card">
@@ -29,6 +69,26 @@ function TallyCard({ name, count, onIncrement, onDecrement, maxCount = 300 }) {
         >
           -
         </button>
+        {isCustom ? (
+          <div className="theme-menu-wrap" ref={themeMenuRef}>
+            <button
+              className="delete-theme-btn"
+              onClick={() => setIsThemeMenuOpen((prev) => !prev)}
+              aria-label={`Theme options for ${name}`}
+              aria-expanded={isThemeMenuOpen}
+              type="button"
+            >
+              ⋮
+            </button>
+            {isThemeMenuOpen ? (
+              <div className="theme-card-menu" role="menu" aria-label={`Options for ${name}`}>
+                <button type="button" className="theme-card-item" onClick={handleRemoveTheme}>
+                  Remove Theme
+                </button>
+              </div>
+            ) : null}
+          </div>
+        ) : null}
       </div>
     </article>
   );
