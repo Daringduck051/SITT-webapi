@@ -32,7 +32,7 @@ function CustomThemeModal({ isOpen, onClose, onSave }) {
             required
           />
           <div className="modal-actions">
-            <button type="submit">Save</button>
+            <button type="submit" className="success-btn">Save</button>
             <button type="button" onClick={handleCancel}>
               Cancel
             </button>

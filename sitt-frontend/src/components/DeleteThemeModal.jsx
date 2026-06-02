@@ -45,7 +45,7 @@ function DeleteThemeModal({ isOpen, themeName, onClose, onConfirm }) {
             <button type="button" onClick={handleCancel}>
               Cancel
             </button>
-            <button type="submit" disabled={!canDelete}>
+            <button type="submit" className="danger-btn" disabled={!canDelete}>
               Delete
             </button>
           </div>

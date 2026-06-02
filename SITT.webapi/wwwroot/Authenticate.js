@@ -9,6 +9,7 @@ const loginAgent = document.getElementById("agentLogin");
 const signInPass = document.getElementById("showPass");
 const createPass = document.getElementById("showPassword");
 const validatePass = document.getElementById("revealPass");
+const reactAppUrl = "/";
 
 if (createForm) {
 
@@ -110,9 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (success) {
                 errorMessage.hidden = true;
-                localStorage.setItem("isLoggedIn", "true");
-                localStorage.setItem("currentUser", username);
-                window.location.href = "Webpage.html";
+                window.location.href = reactAppUrl;
             } else {
                 errorMessage.hidden = false;
                 agentConfirmForm.reset();

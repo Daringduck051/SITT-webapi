@@ -1,6 +1,7 @@
 namespace SITT.Controllers;
 
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Net.Http.Headers;
@@ -62,6 +63,38 @@ public class AccountController : ControllerBase
         }
 
         return Unauthorized();
+    }
+
+    [HttpGet]
+    [Route("session")]
+    public async Task<IActionResult> Session()
+    {
+        if (User?.Identity?.IsAuthenticated != true)
+        {
+            return Unauthorized(new { isAuthenticated = false });
+        }
+
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+        {
+            return Unauthorized(new { isAuthenticated = false });
+        }
+
+        return Ok(new
+        {
+            isAuthenticated = true,
+            userName = user.UserName,
+            email = user.Email
+        });
+    }
+
+    [Authorize]
+    [HttpPost]
+    [Route("logout")]
+    public async Task<IActionResult> Logout()
+    {
+        await _signInManager.SignOutAsync();
+        return Ok(new { message = "Logged out successfully." });
     }
 
     [HttpPost]

@@ -5,6 +5,10 @@ import SummaryModal from './components/SummaryModal.jsx'
 import EmailModal from './components/EmailModal.jsx'
 import DeleteThemeModal from './components/DeleteThemeModal.jsx'
 import HelpModal from './components/HelpModal.jsx'
+import ResetShiftModal from './components/ResetShiftModal.jsx'
+import LoginPage from './components/LoginPage.jsx'
+import RegisterPage from './components/RegisterPage.jsx'
+import { useAuth } from './context/AuthContext.jsx'
 import './App.css'
 
 const DEFAULT_CATEGORIES = [
@@ -22,21 +26,16 @@ function App() {
   const [isSummaryOpen, setIsSummaryOpen] = useState(false)
   const [isEmailOpen, setIsEmailOpen] = useState(false)
   const [isHelpOpen, setIsHelpOpen] = useState(false)
+  const [isResetShiftOpen, setIsResetShiftOpen] = useState(false)
   const [isActionMenuOpen, setIsActionMenuOpen] = useState(false)
   const [isHelpMenuOpen, setIsHelpMenuOpen] = useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
-  const [currentUser, setCurrentUser] = useState('Agent')
   const [themePendingDelete, setThemePendingDelete] = useState(null)
+  const [authView, setAuthView] = useState('login')
   const actionMenuRef = useRef(null)
   const helpMenuRef = useRef(null)
   const userMenuRef = useRef(null)
-
-  useEffect(() => {
-    const storedUser = localStorage.getItem('currentUser')
-    if (storedUser) {
-      setCurrentUser(storedUser)
-    }
-  }, [])
+  const { isAuthenticated, isLoading, login, logout, userName } = useAuth()
 
   useEffect(() => {
     if (!isActionMenuOpen) return
@@ -123,10 +122,17 @@ function App() {
     )
   }
 
-  const resetAll = () => {
+  const confirmResetAll = () => {
     setCategories((prev) => prev.map((category) => ({ ...category, count: 0 })))
+    setIsResetShiftOpen(false)
+  }
+
+  const openResetShiftModal = () => {
+    setIsResetShiftOpen(true)
     setIsActionMenuOpen(false)
   }
+
+  const closeResetShiftModal = () => setIsResetShiftOpen(false)
 
   const openCustomThemeModal = () => {
     setIsCustomThemeOpen(true)
@@ -170,10 +176,8 @@ function App() {
 
   const closeHelpModal = () => setIsHelpOpen(false)
 
-  const logout = async () => {
-    localStorage.removeItem('isLoggedIn')
-    localStorage.removeItem('currentUser')
-    window.location.href = '/Login.html'
+  const handleLogout = async () => {
+    await logout()
   }
 
   const buildSummaryCsvBase64 = () => {
@@ -234,6 +238,18 @@ function App() {
     setIsCustomThemeOpen(false)
   }
 
+  if (isLoading) {
+    return <main className="tally-page" />
+  }
+
+  if (!isAuthenticated) {
+    if (authView === 'register') {
+      return <RegisterPage onShowLogin={() => setAuthView('login')} />
+    }
+
+    return <LoginPage onLogin={login} onShowRegister={() => setAuthView('register')} />
+  }
+
   return (
     <main className="tally-page">
       <header className="tally-navbar">
@@ -255,7 +271,7 @@ function App() {
               <button className="ellipse-item" type="button" onClick={openSummaryModal}>
                 Summary
               </button>
-              <button className="ellipse-item" type="button" onClick={resetAll}>
+              <button className="ellipse-item" type="button" onClick={openResetShiftModal}>
                 New Shift
               </button>
             </div>
@@ -313,9 +329,9 @@ function App() {
             </button>
             {isUserMenuOpen ? (
               <div className="ellipse-menu menu-right user-menu" role="menu" aria-label="User actions">
-                <h6 className="user-menu-header">{currentUser}</h6>
+                <h6 className="user-menu-header">{userName || 'Agent'}</h6>
                 <hr className="user-menu-divider" />
-                <button className="ellipse-item logout-item" type="button" onClick={logout}>
+                <button className="ellipse-item logout-item" type="button" onClick={handleLogout}>
                   Logout
                 </button>
               </div>
@@ -367,6 +383,12 @@ function App() {
       />
 
       <HelpModal isOpen={isHelpOpen} onClose={closeHelpModal} />
+
+      <ResetShiftModal
+        isOpen={isResetShiftOpen}
+        onClose={closeResetShiftModal}
+        onConfirm={confirmResetAll}
+      />
     </main>
   )
 }
