@@ -6,6 +6,7 @@ function TallyCard({
   onIncrement,
   onDecrement,
   onRequestDelete,
+  isLocked = false,
   isCustom = false,
   maxCount = 300,
 }) {
@@ -56,7 +57,7 @@ function TallyCard({
         <button
           className="action-btn"
           onClick={onIncrement}
-          disabled={isMax}
+          disabled={isLocked || isMax}
           aria-label={`Increase ${name}`}
         >
           +
@@ -64,7 +65,7 @@ function TallyCard({
         <button
           className="action-btn"
           onClick={onDecrement}
-          disabled={isMin}
+          disabled={isLocked || isMin}
           aria-label={`Decrease ${name}`}
         >
           -
@@ -77,6 +78,7 @@ function TallyCard({
               aria-label={`Theme options for ${name}`}
               aria-expanded={isThemeMenuOpen}
               type="button"
+              disabled={isLocked}
             >
               ⋮
             </button>

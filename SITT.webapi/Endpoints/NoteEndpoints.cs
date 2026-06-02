@@ -40,6 +40,7 @@ app.MapPost("/notes", async (ClaimsPrincipal user, AppDbContext db, List<Note> i
         {
             // UPDATE: Modify the tracked object directly
             existing.Count = incomingNote.Count;
+            existing.ShiftSent = incomingNote.ShiftSent;
 
             if (existing.Id <= 5 && incomingNote.Id < 5)
             {

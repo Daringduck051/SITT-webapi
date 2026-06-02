@@ -19,8 +19,16 @@ const DEFAULT_CATEGORIES = [
   { id: 5, name: 'OSHA Support', count: 0, isCustom: false },
 ]
 
+const toCategory = (note) => ({
+  id: note.id,
+  name: note.name,
+  count: note.count,
+  isCustom: note.id > 5,
+})
+
 function App() {
   const [categories, setCategories] = useState(DEFAULT_CATEGORIES)
+  const [isShiftSent, setIsShiftSent] = useState(false)
   const [isCustomThemeOpen, setIsCustomThemeOpen] = useState(false)
   const [isDeleteThemeOpen, setIsDeleteThemeOpen] = useState(false)
   const [isSummaryOpen, setIsSummaryOpen] = useState(false)
@@ -35,7 +43,81 @@ function App() {
   const actionMenuRef = useRef(null)
   const helpMenuRef = useRef(null)
   const userMenuRef = useRef(null)
+  const hasLoadedNotesRef = useRef(false)
   const { isAuthenticated, isLoading, login, logout, userName } = useAuth()
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setCategories(DEFAULT_CATEGORIES)
+      setIsShiftSent(false)
+      hasLoadedNotesRef.current = false
+      return
+    }
+
+    let isCancelled = false
+
+    const loadNotes = async () => {
+      try {
+        const response = await fetch('/notes', {
+          method: 'GET',
+          credentials: 'include',
+        })
+
+        if (!response.ok) {
+          hasLoadedNotesRef.current = true
+          return
+        }
+
+        const notes = await response.json()
+        if (isCancelled) return
+
+        if (Array.isArray(notes) && notes.length > 0) {
+          const sortedNotes = [...notes].sort((a, b) => a.id - b.id)
+          setCategories(sortedNotes.map(toCategory))
+          setIsShiftSent(Boolean(sortedNotes.some((note) => note.shiftSent)))
+        } else {
+          setCategories(DEFAULT_CATEGORIES)
+          setIsShiftSent(false)
+        }
+      } catch {
+        // Leave defaults when notes cannot be fetched.
+      } finally {
+        hasLoadedNotesRef.current = true
+      }
+    }
+
+    loadNotes()
+
+    return () => {
+      isCancelled = true
+    }
+  }, [isAuthenticated])
+
+  useEffect(() => {
+    if (!isAuthenticated || !hasLoadedNotesRef.current) return
+
+    const payload = categories.map((category) => ({
+      Id: category.id,
+      Name: category.name,
+      Count: category.count,
+      ShiftSent: isShiftSent,
+    }))
+
+    const persistNotes = async () => {
+      try {
+        await fetch('/notes', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify(payload),
+        })
+      } catch {
+        // Keep UI responsive even if persistence fails temporarily.
+      }
+    }
+
+    persistNotes()
+  }, [categories, isShiftSent, isAuthenticated])
 
   useEffect(() => {
     if (!isActionMenuOpen) return
@@ -113,6 +195,8 @@ function App() {
   }, [isUserMenuOpen])
 
   const updateCount = (id, delta) => {
+    if (isShiftSent) return
+
     setCategories((prev) =>
       prev.map((category) => {
         if (category.id !== id) return category
@@ -124,6 +208,7 @@ function App() {
 
   const confirmResetAll = () => {
     setCategories((prev) => prev.map((category) => ({ ...category, count: 0 })))
+    setIsShiftSent(false)
     setIsResetShiftOpen(false)
   }
 
@@ -135,6 +220,7 @@ function App() {
   const closeResetShiftModal = () => setIsResetShiftOpen(false)
 
   const openCustomThemeModal = () => {
+    if (isShiftSent) return
     setIsCustomThemeOpen(true)
     setIsActionMenuOpen(false)
   }
@@ -222,9 +308,13 @@ function App() {
       const errorText = await response.text()
       throw new Error(errorText || `Email failed with status ${response.status}`)
     }
+
+    setIsShiftSent(true)
   }
 
   const saveCustomTheme = (rawName) => {
+    if (isShiftSent) return
+
     const name = rawName.trim()
     if (!name) return
 
@@ -265,7 +355,12 @@ function App() {
           </button>
           {isActionMenuOpen ? (
             <div className="ellipse-menu" role="menu" aria-label="Theme actions">
-              <button className="ellipse-item" type="button" onClick={openCustomThemeModal}>
+              <button
+                className="ellipse-item"
+                type="button"
+                onClick={openCustomThemeModal}
+                disabled={isShiftSent}
+              >
                 Add Custom Theme
               </button>
               <button className="ellipse-item" type="button" onClick={openSummaryModal}>
@@ -349,6 +444,7 @@ function App() {
             name={category.name}
             count={category.count}
             isCustom={category.isCustom}
+            isLocked={isShiftSent}
             onIncrement={() => updateCount(category.id, 1)}
             onDecrement={() => updateCount(category.id, -1)}
             onRequestDelete={() => openDeleteThemeModal(category)}
