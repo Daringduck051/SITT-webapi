@@ -224,47 +224,48 @@ cancelReset.addEventListener("click", () => {
 summaryButton.addEventListener("click", () => {
     summaryDialog.showModal();
     navMenu.classList.toggle("show");
-
-    emailSummary.addEventListener("click", () => {
-        emailDialog.showModal();
-                    document.getElementById('emailForm').addEventListener('click', async (e) => {
-                    const base64Content = exportTableToCSV();
-                    e.preventDefault();
-                    
-                    const data = {
-                        Subject: document.getElementById('subject').value,
-                        HtmlBody: document.getElementById('body').value,
-                        Attachments: [
-                            {
-                                Filename: (`data_export_${dateString}.csv`),
-                                Content: base64Content,
-                                ContentType: "text/csv"
-                            }
-                        ]
-                    };
-                    try {
-                        const response = await fetch('/api/email/send', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(data)
-                        });
-                        if (response.ok){
-                            alert('Email Sent!');
-                        }
-                        else {
-                            alert("Error sending email.");
-                        };
-                    } 
-                    catch (error) {
-                        console.log("Error: ", error)
-                    }
-
-                    disableButtons();
-                    emailDialog.close("close");
-                    summaryDialog.close("cancel");
-                    emailForm.reset();
-        });
 });
+
+emailSummary.addEventListener("click", () => {
+    emailDialog.showModal();
+});
+
+document.getElementById('emailForm').addEventListener('click', async (e) => {
+    const base64Content = exportTableToCSV();
+    e.preventDefault();
+
+    const data = {
+        Subject: document.getElementById('subject').value,
+        HtmlBody: document.getElementById('body').value,
+        Attachments: [
+            {
+                Filename: (`data_export_${dateString}.csv`),
+                Content: base64Content,
+                ContentType: "text/csv"
+            }
+        ]
+    };
+    try {
+        const response = await fetch('/api/email/send', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        if (response.ok){
+            alert('Email Sent!');
+        }
+        else {
+            alert("Error sending email.");
+        };
+    } 
+    catch (error) {
+        console.log("Error: ", error)
+    }
+
+    disableButtons();
+    emailDialog.close("close");
+    summaryDialog.close("cancel");
+    emailForm.reset();
 });
 
 cancelEmail.addEventListener("click", () => {
