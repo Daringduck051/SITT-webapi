@@ -112,7 +112,6 @@ function App() {
           body: JSON.stringify(payload),
         })
       } catch {
-        // Keep UI responsive even if persistence fails temporarily.
       }
     }
 
@@ -267,13 +266,29 @@ function App() {
   }
 
   const buildSummaryCsvBase64 = () => {
-    const header = ['Theme Name', 'Tallies']
-    const rows = categories.map((item) => [item.name, String(item.count)])
-    const csvLines = [header, ...rows].map((row) =>
-      row.map((value) => `"${String(value).replaceAll('"', '""')}"`).join(','),
-    )
-    const csvString = csvLines.join('\n')
-    return btoa(unescape(encodeURIComponent(csvString)))
+    const now = new Date()
+    const dateString = now.toLocaleDateString()
+    const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+
+    const csv = []
+    const tableRows = [
+      ['Theme Name', 'Tallies'],
+      ...categories.map((item) => [item.name, String(item.count)]),
+    ]
+
+    for (const row of tableRows) {
+      const rowData = []
+      for (const value of row) {
+        rowData.push(`"${String(value).replaceAll('"', '""')}"`)
+      }
+      csv.push(rowData.join(','))
+    }
+
+    csv.push('Shift End:')
+    csv.push(`${timeString}, ${dateString}`)
+
+    const csvString = csv.join('\n')
+    return btoa(csvString)
   }
 
   const sendEmail = async ({ subject, body }) => {
